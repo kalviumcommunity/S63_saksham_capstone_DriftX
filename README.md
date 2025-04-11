@@ -66,7 +66,7 @@ Week 1: Initial Setup & Design
 Day 1: Create low-fidelity wireframes and basic layout.
 
 
-Day 2: Create high-fidelity UI/UX designs.
+Day 2: Create high-fidelity UI/UX design.
 
 
 Day 3: Set up GitHub repository (README, issues, project board).
