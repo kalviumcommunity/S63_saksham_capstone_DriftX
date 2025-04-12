@@ -80,4 +80,40 @@ router.post('/', (req, res) => {
   }
 });
 
+// ✅ PUT update product by ID
+router.put('/:id', (req, res) => {
+  try {
+    const {
+      name,
+      description,
+      price,
+      images,
+      category,
+      stock,
+      ratings,
+      numReviews,
+    } = req.body;
+
+    const productIndex = dummyProducts.findIndex(p => p._id === req.params.id);
+
+    if (productIndex === -1) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Update only provided fields
+    if (name) dummyProducts[productIndex].name = name;
+    if (description) dummyProducts[productIndex].description = description;
+    if (price) dummyProducts[productIndex].price = price;
+    if (images) dummyProducts[productIndex].images = images;
+    if (category) dummyProducts[productIndex].category = category;
+    if (stock !== undefined) dummyProducts[productIndex].stock = stock;
+    if (ratings !== undefined) dummyProducts[productIndex].ratings = ratings;
+    if (numReviews !== undefined) dummyProducts[productIndex].numReviews = numReviews;
+
+    res.json(dummyProducts[productIndex]);
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating product' });
+  }
+});
+
 module.exports = router;

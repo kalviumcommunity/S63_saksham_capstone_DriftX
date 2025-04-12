@@ -97,7 +97,7 @@ router.post('/', (req, res) => {
     }
 
     const newOrder = {
-      _id: uuidv4(), // unique ID
+      _id: uuidv4(),
       user,
       orderItems,
       shippingAddress,
@@ -109,11 +109,45 @@ router.post('/', (req, res) => {
     };
 
     orders.push(newOrder);
-
     res.status(201).json(newOrder);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error creating order' });
+  }
+});
+
+// ✅ PUT update order by ID
+router.put('/:id', (req, res) => {
+  try {
+    const {
+      user,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      paymentStatus,
+      orderStatus,
+      totalAmount,
+    } = req.body;
+
+    const orderIndex = orders.findIndex((order) => order._id === req.params.id);
+
+    if (orderIndex === -1) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Update only provided fields
+    if (user) orders[orderIndex].user = user;
+    if (orderItems) orders[orderIndex].orderItems = orderItems;
+    if (shippingAddress) orders[orderIndex].shippingAddress = shippingAddress;
+    if (paymentMethod) orders[orderIndex].paymentMethod = paymentMethod;
+    if (paymentStatus) orders[orderIndex].paymentStatus = paymentStatus;
+    if (orderStatus) orders[orderIndex].orderStatus = orderStatus;
+    if (totalAmount !== undefined) orders[orderIndex].totalAmount = totalAmount;
+
+    res.json(orders[orderIndex]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating order' });
   }
 });
 
