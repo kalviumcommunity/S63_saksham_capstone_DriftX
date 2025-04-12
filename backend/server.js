@@ -3,13 +3,28 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+// Routes
+const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+
+// Use Routes
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
+
+// Root Route
+app.get('/', (req, res) => res.send('Driftx Backend Running!'));
+
+// Server Port
 const PORT = process.env.PORT || 5000;
 
-app.get('/', (req, res) => res.send('EcoLink Backend Running!'));
-
+// Start Server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port http://localhost:${PORT}`);
 });
