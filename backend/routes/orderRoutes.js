@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid'); // For generating unique _id
 
 // Dummy in-memory order data
 const orders = [
@@ -56,7 +57,7 @@ const orders = [
   },
 ];
 
-//  GET all orders
+// ✅ GET all orders
 router.get('/', (req, res) => {
   try {
     res.json(orders);
@@ -66,7 +67,7 @@ router.get('/', (req, res) => {
   }
 });
 
-//  GET order by ID
+// ✅ GET order by ID
 router.get('/:id', (req, res) => {
   try {
     const order = orders.find((order) => order._id === req.params.id);
@@ -75,6 +76,44 @@ router.get('/:id', (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching order' });
+  }
+});
+
+// ✅ POST create new order
+router.post('/', (req, res) => {
+  try {
+    const {
+      user,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      paymentStatus = 'Pending',
+      orderStatus = 'Processing',
+      totalAmount,
+    } = req.body;
+
+    if (!user || !orderItems || !shippingAddress || !paymentMethod || !totalAmount) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const newOrder = {
+      _id: uuidv4(), // unique ID
+      user,
+      orderItems,
+      shippingAddress,
+      paymentMethod,
+      paymentStatus,
+      orderStatus,
+      totalAmount,
+      createdAt: new Date(),
+    };
+
+    orders.push(newOrder);
+
+    res.status(201).json(newOrder);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error creating order' });
   }
 });
 

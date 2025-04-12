@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { v4: uuidv4 } = require('uuid'); // For generating unique IDs
 
 // Dummy users (password excluded)
 const users = [
@@ -42,6 +43,30 @@ router.get('/:id', (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching user' });
+  }
+});
+
+// ✅ POST create new user
+router.post('/', (req, res) => {
+  try {
+    const { name, email, role } = req.body;
+
+    if (!name || !email || !role) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const newUser = {
+      _id: uuidv4(),
+      name,
+      email,
+      role,
+    };
+
+    users.push(newUser);
+    res.status(201).json(newUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error creating user' });
   }
 });
 
