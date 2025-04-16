@@ -11,17 +11,26 @@ const orderSchema = new mongoose.Schema({
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
+        required: true,
       },
-      quantity: Number,
-      price: Number,
+      quantity: {
+        type: Number,
+        required: true,
+        min: 1,
+      },
+      price: {
+        type: Number,
+        required: true,
+        min: 0,
+      },
     },
   ],
   shippingAddress: {
-    address: String,
-    city: String,
-    state: String,
-    postalCode: String,
-    country: String,
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String },
+    postalCode: { type: String, required: true },
+    country: { type: String, required: true },
   },
   paymentMethod: {
     type: String,
@@ -38,7 +47,11 @@ const orderSchema = new mongoose.Schema({
     enum: ['Processing', 'Shipped', 'Delivered'],
     default: 'Processing',
   },
-  totalAmount: Number,
+  totalAmount: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

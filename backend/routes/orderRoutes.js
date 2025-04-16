@@ -1,66 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid'); // For generating unique _id
 
-// Dummy in-memory order data
-const orders = [
-  {
-    _id: '1',
-    user: { name: 'John Doe', email: 'john@example.com' },
-    orderItems: [
-      {
-        product: { name: 'Product A', price: 100 },
-        quantity: 2,
-        price: 100,
-      },
-      {
-        product: { name: 'Product B', price: 150 },
-        quantity: 1,
-        price: 150,
-      },
-    ],
-    shippingAddress: {
-      address: '123 Main Street',
-      city: 'Jaipur',
-      state: 'Rajasthan',
-      postalCode: '302001',
-      country: 'India',
-    },
-    paymentMethod: 'PayPal',
-    paymentStatus: 'Paid',
-    orderStatus: 'Delivered',
-    totalAmount: 350,
-    createdAt: new Date(),
-  },
-  {
-    _id: '2',
-    user: { name: 'Jane Smith', email: 'jane@example.com' },
-    orderItems: [
-      {
-        product: { name: 'Product C', price: 200 },
-        quantity: 1,
-        price: 200,
-      },
-    ],
-    shippingAddress: {
-      address: '456 Street Lane',
-      city: 'Delhi',
-      state: 'Delhi',
-      postalCode: '110001',
-      country: 'India',
-    },
-    paymentMethod: 'Stripe',
-    paymentStatus: 'Pending',
-    orderStatus: 'Processing',
-    totalAmount: 200,
-    createdAt: new Date(),
-  },
-];
+const Order = require('../models/OrderSchema');
+const User = require('../models/UserSchema');
+const Product = require('../models/Productschema');
 
 // ✅ GET all orders
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    res.json(orders);
+    const orders = await Order.find()
+      .populate('user', 'name email')
+      .populate('orderItems.product', 'name price');
+    res.status(200).json(orders);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching orders' });
@@ -68,10 +19,16 @@ router.get('/', (req, res) => {
 });
 
 // ✅ GET order by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const order = orders.find((order) => order._id === req.params.id);
-    if (!order) return res.status(404).json({ message: 'Order not found' });
+    const order = await Order.findById(req.params.id)
+      .populate('user', 'name email')
+      .populate('orderItems.product', 'name price');
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
     res.json(order);
   } catch (err) {
     console.error(err);
@@ -80,7 +37,7 @@ router.get('/:id', (req, res) => {
 });
 
 // ✅ POST create new order
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const {
       user,
@@ -96,8 +53,7 @@ router.post('/', (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const newOrder = {
-      _id: uuidv4(),
+    const newOrder = new Order({
       user,
       orderItems,
       shippingAddress,
@@ -105,11 +61,16 @@ router.post('/', (req, res) => {
       paymentStatus,
       orderStatus,
       totalAmount,
-      createdAt: new Date(),
-    };
+    });
 
-    orders.push(newOrder);
-    res.status(201).json(newOrder);
+    const savedOrder = await newOrder.save();
+
+    const populatedOrder = await savedOrder
+      .populate('user', 'name email')
+      .populate('orderItems.product', 'name price')
+      .execPopulate();
+
+    res.status(201).json(populatedOrder);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error creating order' });
@@ -117,7 +78,7 @@ router.post('/', (req, res) => {
 });
 
 // ✅ PUT update order by ID
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const {
       user,
@@ -129,22 +90,28 @@ router.put('/:id', (req, res) => {
       totalAmount,
     } = req.body;
 
-    const orderIndex = orders.findIndex((order) => order._id === req.params.id);
-
-    if (orderIndex === -1) {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Update only provided fields
-    if (user) orders[orderIndex].user = user;
-    if (orderItems) orders[orderIndex].orderItems = orderItems;
-    if (shippingAddress) orders[orderIndex].shippingAddress = shippingAddress;
-    if (paymentMethod) orders[orderIndex].paymentMethod = paymentMethod;
-    if (paymentStatus) orders[orderIndex].paymentStatus = paymentStatus;
-    if (orderStatus) orders[orderIndex].orderStatus = orderStatus;
-    if (totalAmount !== undefined) orders[orderIndex].totalAmount = totalAmount;
+    // Update fields if provided
+    if (user) order.user = user;
+    if (orderItems) order.orderItems = orderItems;
+    if (shippingAddress) order.shippingAddress = shippingAddress;
+    if (paymentMethod) order.paymentMethod = paymentMethod;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+    if (orderStatus) order.orderStatus = orderStatus;
+    if (totalAmount !== undefined) order.totalAmount = totalAmount;
 
-    res.json(orders[orderIndex]);
+    const updatedOrder = await order.save();
+
+    const populatedOrder = await updatedOrder
+      .populate('user', 'name email')
+      .populate('orderItems.product', 'name price')
+      .execPopulate();
+
+    res.json(populatedOrder);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error updating order' });
