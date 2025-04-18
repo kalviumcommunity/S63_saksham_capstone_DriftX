@@ -6,4 +6,4 @@ const API = axios.create({
 });
 
 export const getAllProducts = () => API.get('/products');
-export const loginUser = (data) => API.post('/auth/login', data);
+export const loginUser = (data) => API.post('/users/login', data);
