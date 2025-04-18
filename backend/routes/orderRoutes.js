@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import Order from '../models/OrderSchema.js';
+import User from '../models/UserSchema.js';
+import Product from '../models/Productschema.js';
 
-const Order = require('../models/OrderSchema');
-const User = require('../models/UserSchema');
-const Product = require('../models/Productschema');
+const router = express.Router();
 
 // ✅ GET all orders
 router.get('/', async (req, res) => {
@@ -67,8 +67,7 @@ router.post('/', async (req, res) => {
 
     const populatedOrder = await savedOrder
       .populate('user', 'name email')
-      .populate('orderItems.product', 'name price')
-      .execPopulate();
+      .populate('orderItems.product', 'name price');
 
     res.status(201).json(populatedOrder);
   } catch (err) {
@@ -108,8 +107,7 @@ router.put('/:id', async (req, res) => {
 
     const populatedOrder = await updatedOrder
       .populate('user', 'name email')
-      .populate('orderItems.product', 'name price')
-      .execPopulate();
+      .populate('orderItems.product', 'name price');
 
     res.json(populatedOrder);
   } catch (err) {
@@ -118,4 +116,4 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router; // ✅ IMPORTANT
