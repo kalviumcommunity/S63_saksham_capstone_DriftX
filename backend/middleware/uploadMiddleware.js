@@ -1,23 +1,31 @@
 // backend/middleware/uploadMiddleware.js
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 
-// Storage config
+// Ensure uploads folder exists
+const uploadDir = 'uploads';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+// Multer config
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, 'uploads/');
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
   },
 });
 
-// File filter (optional)
+// Filter: Accept only images
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
+  if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new Error('Only images are allowed'), false);
+    cb('Only image files are allowed!', false);
   }
 };
 

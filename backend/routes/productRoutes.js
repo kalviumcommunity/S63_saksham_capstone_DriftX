@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid'); // For generating unique _id
 
 // Temporary dummy products array
 const dummyProducts = [
@@ -116,4 +117,4 @@ router.put('/:id', (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
