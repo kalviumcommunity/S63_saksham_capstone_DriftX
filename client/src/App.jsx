@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import Cart from './pages/Cart';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -12,7 +14,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            {/* Add other routes like /register, /product/:id, /cart etc. */}
+            <Route path="/register" element={<Register />} />
+            <Route path="/cart" element={<Cart />} />
+            {/* Add more routes like /product/:id if needed */}
           </Routes>
         </main>
       </div>
