@@ -1,50 +1,38 @@
 import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import Product from '../models/Productschema.js';
+import User from '../models/UserSchema.js';
 
 const router = express.Router();
 
-// Temporary dummy products array
-const dummyProducts = [
-  {
-    _id: '1',
-    name: 'AirPods Pro 2',
-    description: 'Wireless earbuds with noise cancellation',
-    price: 249,
-    images: ['https://example.com/image.jpg'],
-    category: 'Electronics',
-    stock: 50,
-    ratings: 4.5,
-    numReviews: 100,
-    createdBy: {
-      name: 'Test User',
-      email: 'test@example.com',
-    },
-    createdAt: new Date(),
-  },
-];
-
 // ✅ GET all products
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    res.json(dummyProducts);
+    const products = await Product.find().populate('createdBy', 'name email');
+    res.status(200).json(products);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error fetching products' });
   }
 });
 
 // ✅ GET product by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const product = dummyProducts.find(p => p._id === req.params.id);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    const product = await Product.findById(req.params.id).populate('createdBy', 'name email');
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
     res.json(product);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error fetching product' });
   }
 });
 
 // ✅ POST create new product
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const {
       name,
@@ -53,36 +41,35 @@ router.post('/', (req, res) => {
       images,
       category,
       stock,
-      createdBy,
+      createdBy
     } = req.body;
 
-    if (!name || !description || !price || !category || !stock || !createdBy) {
+    if (!name || !price || !createdBy) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const newProduct = {
-      _id: uuidv4(),
+    const newProduct = new Product({
       name,
       description,
       price,
       images: images || [],
       category,
-      stock,
-      ratings: 0,
-      numReviews: 0,
-      createdBy,
-      createdAt: new Date(),
-    };
+      stock: stock || 0,
+      createdBy
+    });
 
-    dummyProducts.push(newProduct);
-    res.status(201).json(newProduct);
+    const savedProduct = await newProduct.save();
+    const populatedProduct = await savedProduct.populate('createdBy', 'name email');
+
+    res.status(201).json(populatedProduct);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error creating product' });
   }
 });
 
 // ✅ PUT update product by ID
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
     const {
       name,
@@ -92,29 +79,49 @@ router.put('/:id', (req, res) => {
       category,
       stock,
       ratings,
-      numReviews,
+      numReviews
     } = req.body;
 
-    const productIndex = dummyProducts.findIndex(p => p._id === req.params.id);
-
-    if (productIndex === -1) {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // Update only provided fields
-    if (name) dummyProducts[productIndex].name = name;
-    if (description) dummyProducts[productIndex].description = description;
-    if (price) dummyProducts[productIndex].price = price;
-    if (images) dummyProducts[productIndex].images = images;
-    if (category) dummyProducts[productIndex].category = category;
-    if (stock !== undefined) dummyProducts[productIndex].stock = stock;
-    if (ratings !== undefined) dummyProducts[productIndex].ratings = ratings;
-    if (numReviews !== undefined) dummyProducts[productIndex].numReviews = numReviews;
+    // Update fields if provided
+    if (name) product.name = name;
+    if (description !== undefined) product.description = description;
+    if (price !== undefined) product.price = price;
+    if (images) product.images = images;
+    if (category !== undefined) product.category = category;
+    if (stock !== undefined) product.stock = stock;
+    if (ratings !== undefined) product.ratings = ratings;
+    if (numReviews !== undefined) product.numReviews = numReviews;
 
-    res.json(dummyProducts[productIndex]);
+    const updatedProduct = await product.save();
+    const populatedProduct = await updatedProduct.populate('createdBy', 'name email');
+
+    res.json(populatedProduct);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Error updating product' });
   }
 });
 
-export default router;
+// ✅ DELETE product by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    await Product.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error deleting product' });
+  }
+});
+
+export default router; // ✅ IMPORTANT

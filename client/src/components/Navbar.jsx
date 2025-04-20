@@ -1,37 +1,91 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
+import "./Navbar.css";
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const cartItems = useSelector((state) => state.cart?.items || []);
+  const { userInfo } = useSelector((state) => state.user || { userInfo: null });
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <nav className="bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <nav className="navbar">
+      <div className="navbar-container">
         
         {/* Left - Brand */}
-        <div className="text-2xl font-bold text-indigo-600">
-          <Link to="/">DriftX</Link>
-        </div>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Link to="/" className="navbar-brand">DriftX</Link>
+        </motion.div>
 
         {/* Center - Search Bar */}
-        <div className="w-full max-w-md mx-4">
+        <div className="navbar-search">
           <input
             type="text"
             placeholder="Search products..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
+        {/* Mobile Menu Button */}
+        <button className="mobile-menu-button" onClick={toggleMenu}>
+          {isMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+
         {/* Right - Links & Cart */}
-        <div className="flex items-center space-x-4">
-          <Link to="/" className="text-gray-700 hover:text-indigo-600">Home</Link>
-          <Link to="/login" className="text-gray-700 hover:text-indigo-600">Login</Link>
-          <Link to="/register" className="text-gray-700 hover:text-indigo-600">Register</Link>
+        <div className={`navbar-links ${isMenuOpen ? 'open' : ''}`}>
+          <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+            <Link to="/" className="navbar-link">Home</Link>
+          </motion.div>
+          <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+            <Link to="/mens" className="navbar-link">Men</Link>
+          </motion.div>
+          <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+            <Link to="/womens" className="navbar-link">Women</Link>
+          </motion.div>
           
-          <Link to="/cart" className="relative text-gray-700 hover:text-indigo-600">
-            <FaShoppingCart className="text-xl" />
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              0
-            </span>
-          </Link>
+          {userInfo ? (
+            <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+              <Link to="/profile" className="navbar-link">Profile</Link>
+            </motion.div>
+          ) : (
+            <>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <Link to="/login" className="navbar-link">Login</Link>
+              </motion.div>
+              <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
+                <Link to="/register" className="navbar-link">Register</Link>
+              </motion.div>
+            </>
+          )}
+          
+          <motion.div 
+            whileHover={{ scale: 1.1 }} 
+            whileTap={{ scale: 0.9 }}
+          >
+            <Link to="/cart" className="cart-icon">
+              <FaShoppingCart />
+              <AnimatePresence>
+                {cartItems.length > 0 && (
+                  <motion.span 
+                    className="cart-badge"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
+                    {cartItems.length}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </Link>
+          </motion.div>
         </div>
       </div>
     </nav>
