@@ -78,3 +78,61 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 };
+
+export const updateUser = async (req, res) => {
+  try {
+    const { username, email, name, phone, password } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update user fields
+    user.username = username || user.username;
+    user.email = email || user.email;
+    user.name = name || user.name;
+    user.phone = phone || user.phone;
+    
+    // Update password if provided
+    if (password) {
+      user.password = password;
+    }
+
+    // Update profile image if provided
+    if (req.file) {
+      user.profileImage = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      id: updatedUser._id,
+      username: updatedUser.username,
+      email: updatedUser.email,
+      name: updatedUser.name,
+      phone: updatedUser.phone,
+      profileImage: updatedUser.profileImage,
+      role: updatedUser.role,
+    });
+  } catch (err) {
+    console.error('Update Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await user.deleteOne();
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Delete Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};

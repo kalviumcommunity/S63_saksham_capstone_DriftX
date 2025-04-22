@@ -1,7 +1,10 @@
 import express from 'express';
 import Order from '../models/OrderSchema.js';
+import { protect, isAdmin } from '../middleware/authMiddleware.js';
+
 import User from '../models/UserSchema.js';
 import Product from '../models/Productschema.js';
+
 
 const router = express.Router();
 
