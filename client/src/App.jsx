@@ -10,6 +10,9 @@ import ProductDetails from './pages/ProductDetails';
 import UserProfile from './pages/UserProfile';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import UpdateProduct from './pages/UpdateProduct'; // ✅ Added
+import AdminProducts from './pages/AdminProducts'; // ✅ Added for product management
+import AddProduct from './pages/AddProduct';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import './App.css';
@@ -32,6 +35,9 @@ function App() {
               <Route path="/profile" element={<UserProfile />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/edit/:id" element={<UpdateProduct />} /> {/* ✅ Added */}
+              <Route path="/admin/products" element={<AdminProducts />} /> {/* ✅ Added for product management */}
+              <Route path="/add-product" element={<AddProduct />} />
             </Routes>
           </AnimatePresence>
         </main>
