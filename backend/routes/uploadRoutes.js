@@ -2,6 +2,8 @@
 import express from 'express';
 import upload from '../middleware/uploadMiddleware.js';
 import path from 'path';
+import { protect, isAdmin } from '../middleware/authMiddleware.js';
+
 
 const router = express.Router();
 
