@@ -13,7 +13,6 @@ import {
   FaSpinner,
   FaArrowRight
 } from "react-icons/fa";
-import "./Womens.css";
 
 const Womens = () => {
   const [products, setProducts] = useState([]);

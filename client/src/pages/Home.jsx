@@ -1,24 +1,107 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
-import { FaArrowRight, FaPaperPlane, FaTshirt, FaRuler } from "react-icons/fa";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
+import { FaTruck, FaExchangeAlt, FaShieldAlt, FaClock, FaStar } from "react-icons/fa";
 import ProductCard from "../components/ProductCard";
+import ProductShowcase from "../components/ProductShowcase";
+import InclusivityShowcase from "../components/InclusivityShowcase";
 import { getAllProducts } from "../services/api";
-import "./Home.css";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showLogo, setShowLogo] = useState(true);
-  const mensRef = useRef(null);
-  const womensRef = useRef(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const { scrollYProgress } = useScroll();
+  const [videoError, setVideoError] = useState(false);
   
-  // 3D animation values
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [30, -30]);
-  const rotateY = useTransform(x, [-100, 100], [-30, 30]);
+  const scaleProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const opacity = useTransform(scaleProgress, [0, 0.5, 1], [1, 0.8, 0.6]);
+  const scale = useTransform(scaleProgress, [0, 0.5, 1], [1, 0.95, 0.9]);
+
+  const fashionImages = [
+    {
+      url: "https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg",
+      title: "Elegant White Collection"
+    },
+    {
+      url: "https://images.pexels.com/photos/2887766/pexels-photo-2887766.jpeg",
+      title: "Urban Black Essential"
+    },
+    {
+      url: "https://images.pexels.com/photos/2896840/pexels-photo-2896840.jpeg",
+      title: "Beige Comfort Series"
+    },
+    {
+      url: "https://images.pexels.com/photos/2916814/pexels-photo-2916814.jpeg",
+      title: "Classic Neutrals"
+    },
+    {
+      url: "https://images.pexels.com/photos/2922301/pexels-photo-2922301.jpeg",
+      title: "Modern Outerwear"
+    }
+  ];
+
+  const showcaseItems = [
+    {
+      id: 1,
+      type: "video",
+      videoSrc: "/videos/casual-fashion.mp4",
+      title: "White Knit Sweater",
+      price: "$70.00",
+      brand: "MOE",
+      poster: "https://images.pexels.com/photos/9558583/pexels-photo-9558583.jpeg"
+    },
+    {
+      id: 2,
+      type: "video",
+      videoSrc: "/videos/grey-fashion.mp4",
+      title: "Grey Casual Set",
+      price: "$85.00",
+      brand: "MOE",
+      poster: "https://images.pexels.com/photos/9558657/pexels-photo-9558657.jpeg"
+    },
+    {
+      id: 3,
+      type: "video",
+      videoSrc: "/videos/mens-fashion.mp4",
+      title: "Men's Summer Collection 2024",
+      price: "$95.00",
+      brand: "MOE",
+      poster: "https://images.pexels.com/photos/2887766/pexels-photo-2887766.jpeg"
+    },
+    {
+      id: 4,
+      type: "video",
+      videoSrc: "/videos/fashion-video.mp4",
+      title: "Women's Luxury Collection",
+      price: "$95.00",
+      brand: "MOE",
+      poster: "https://images.pexels.com/photos/9558762/pexels-photo-9558762.jpeg"
+    },
+    {
+      id: 5,
+      type: "video",
+      videoSrc: "/videos/evening-fashion.mp4",
+      title: "Nude Evening Dress",
+      price: "$110.00",
+      brand: "MOE",
+      poster: "https://images.pexels.com/photos/9558788/pexels-photo-9558788.jpeg"
+    }
+  ];
+
+  const nextSlide = () => {
+    setActiveIndex((prev) => (prev + 1) % showcaseItems.length);
+  };
+
+  const prevSlide = () => {
+    setActiveIndex((prev) => (prev - 1 + showcaseItems.length) % showcaseItems.length);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,656 +120,632 @@ const Home = () => {
     };
 
     fetchData();
-    
-    // Hide 3D logo after 5 seconds
-    const timer = setTimeout(() => {
-      setShowLogo(false);
-    }, 5000);
-    
-    return () => clearTimeout(timer);
   }, []);
-  
-  // Handle mouse move for 3D effect
-  const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
+
+  const handleVideoLoad = () => {
+    console.log("Video loaded successfully");
+    setVideoLoaded(true);
   };
-  
-  // Scroll to section function
-  const scrollToSection = (ref) => {
-    ref.current.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
-    });
+
+  const handleVideoError = (e) => {
+    console.error("Video loading error:", e);
+    setVideoError(true);
   };
-  
-  // 3D Logo animation variants
-  const logoVariants = {
-    hidden: { 
-      opacity: 0,
-      scale: 0.8,
-      rotateX: 90,
-      rotateY: 0
-    },
-    visible: { 
-      opacity: 1,
-      scale: 1,
-      rotateX: 0,
-      rotateY: 0,
-      transition: { 
-        type: "spring",
-        stiffness: 100,
-        damping: 15,
-        duration: 1
+
+  const VideoComponent = ({ src, poster, isNext }) => {
+    const [error, setError] = useState(false);
+    const videoRef = useRef(null);
+    
+    useEffect(() => {
+      if (videoRef.current) {
+        videoRef.current.load();
+        if (isNext) {
+          videoRef.current.preload = "auto";
+        }
       }
-    },
-    exit: {
-      opacity: 0,
-      scale: 1.2,
-      transition: { duration: 0.5 }
-    }
-  };
-  
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        duration: 0.5,
-        when: "beforeChildren",
-        staggerChildren: 0.2
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { duration: 0.5 }
-    }
+    }, [src, isNext]);
+    
+    return error ? (
+      <img 
+        src={poster} 
+        alt="Fashion Collection"
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <video
+        ref={videoRef}
+        className="w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+        poster={poster}
+        onError={() => setError(true)}
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+    );
   };
 
-  // Sample product data for men's and women's clothing
-  const sampleProducts = [
-    {
-      _id: 1,
-      name: "Men's Classic Fit Shirt",
-      category: "Men's Clothing",
-      price: 49.99,
-      image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
-      rating: 4.5,
-      description: "A classic fit shirt perfect for any occasion.",
-      sizes: ["S", "M", "L", "XL"],
-      colors: ["White", "Blue", "Black"]
-    },
-    {
-      _id: 2,
-      name: "Women's Summer Dress",
-      category: "Women's Clothing",
-      price: 59.99,
-      image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      rating: 4.8,
-      description: "A beautiful summer dress for a day out.",
-      sizes: ["XS", "S", "M", "L"],
-      colors: ["Red", "Pink", "Floral"]
-    },
-    {
-      _id: 3,
-      name: "Men's Denim Jacket",
-      category: "Men's Clothing",
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=736&q=80",
-      rating: 4.3,
-      description: "A stylish denim jacket for a casual look.",
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      colors: ["Blue", "Light Blue", "Dark Blue"]
-    },
-    {
-      _id: 4,
-      name: "Women's Casual Blouse",
-      category: "Women's Clothing",
-      price: 39.99,
-      image: "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      rating: 4.6,
-      description: "A comfortable casual blouse for everyday wear.",
-      sizes: ["XS", "S", "M", "L"],
-      colors: ["White", "Black", "Beige"]
-    },
-    {
-      _id: 5,
-      name: "Men's Slim Fit Jeans",
-      category: "Men's Clothing",
-      price: 69.99,
-      image: "https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-      rating: 4.4,
-      description: "Slim fit jeans for a modern look.",
-      sizes: ["30", "32", "34", "36", "38"],
-      colors: ["Blue", "Black", "Grey"]
-    },
-    {
-      _id: 6,
-      name: "Women's Leather Jacket",
-      category: "Women's Clothing",
-      price: 99.99,
-      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=735&q=80",
-      rating: 4.9,
-      description: "A stylish leather jacket for a bold look.",
-      sizes: ["XS", "S", "M", "L"],
-      colors: ["Black", "Brown", "Red"]
-    },
-    {
-      _id: 7,
-      name: "Men's Casual T-Shirt",
-      category: "Men's Clothing",
-      price: 29.99,
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80",
-      rating: 4.2,
-      description: "A comfortable casual t-shirt for everyday wear.",
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      colors: ["White", "Black", "Grey", "Navy", "Green"]
-    },
-    {
-      _id: 8,
-      name: "Women's Maxi Dress",
-      category: "Women's Clothing",
-      price: 79.99,
-      image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=873&q=80",
-      rating: 4.7,
-      description: "A beautiful maxi dress for special occasions.",
-      sizes: ["XS", "S", "M", "L"],
-      colors: ["Black", "Red", "Blue", "Floral"]
-    }
-  ];
-
-  // Use sample data if no products are fetched
-  const displayProducts = products.length > 0 ? products : sampleProducts;
-
-  // Handle newsletter subscription
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
-    // In a real app, you would send this to your backend
-    alert(`Thank you for subscribing with ${email}!`);
-    setEmail("");
-  };
+  const renderCarouselItem = (item, isCenter, isNext) => (
+    <div className="relative w-full h-full overflow-hidden rounded-lg shadow-lg">
+      {isCenter && item.type === 'video' ? (
+        <VideoComponent src={item.videoSrc} poster={item.poster || item.image} isNext={isNext} />
+      ) : (
+        <img
+          src={item.image || item.poster}
+          alt={item.title}
+          className="w-full h-full object-cover"
+        />
+      )}
+      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+          <p className="text-white/80 text-sm mb-1">{item.brand}</p>
+          <h3 className="text-white text-xl font-medium mb-2">{item.title}</h3>
+          <p className="text-white text-xl font-bold">{item.price}</p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <motion.div 
-      className="home-container"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      className="w-full min-h-screen bg-white"
+      style={{ opacity, scale }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
     >
-      {/* 3D Logo Animation */}
-      <AnimatePresence>
-        {showLogo && (
-          <motion.div 
-            className="logo-3d-container"
-            variants={logoVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onMouseMove={handleMouseMove}
-          >
-            <motion.div 
-              className="logo-3d"
-              style={{ rotateX, rotateY, z: 100 }}
-            >
-              <motion.div className="logo-3d-text">
-                <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.5 }}
-                >
-                  D
-                </motion.span>
-                <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.5 }}
-                >
-                  r
-                </motion.span>
-                <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7, duration: 0.5 }}
-                >
-                  i
-                </motion.span>
-                <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                >
-                  f
-                </motion.span>
-                <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9, duration: 0.5 }}
-                >
-                  t
-                </motion.span>
-                <motion.span 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.0, duration: 0.5 }}
-                >
-                  X
-                </motion.span>
-              </motion.div>
-              <motion.p
-                className="logo-3d-tagline"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-              >
-                Fashion Redefined
-              </motion.p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
       {/* Hero Section */}
-      <motion.div 
-        className="hero-section"
-        variants={itemVariants}
-      >
-        <motion.img 
-          src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-          alt="Fashion Collection" 
-          className="hero-image"
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1 }}
-        />
-        <div className="hero-content">
-          <motion.h1 
-            className="hero-title"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+      <section className="relative w-full h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden">
+        <motion.div 
+          className="absolute inset-0 w-full h-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5 }}
+        >
+          {!videoError ? (
+            <video
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              onError={handleVideoError}
+              style={{ filter: "brightness(0.6)" }}
+              poster="https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg"
+            >
+              <source 
+                src="videos/saksham.mp4"
+                type="video/mp4"
+              />
+            </video>
+          ) : (
+            <div 
+              className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: "url('https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg')",
+                filter: "brightness(0.6)"
+              }}
+            >
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%)',
+                  backdropFilter: 'blur(5px)'
+                }}
+              />
+            </div>
+          )}
+        </motion.div>
+        <div className="relative z-10 text-center text-white px-4 w-full max-w-7xl mx-auto">
+          <motion.h1
+            className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            Discover Your Style with DriftX
+            DRIFTX
           </motion.h1>
-          <motion.p 
-            className="hero-subtitle"
-            initial={{ x: -50, opacity: 0 }}
+          <motion.p
+            className="text-xl md:text-2xl mb-8 text-gray-200 drop-shadow-lg max-w-3xl mx-auto"
+            initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Explore our latest collection of premium clothing for men and women. Quality fabrics, trendy designs, and unbeatable prices.
+            Discover luxury fashion that defines your unique personality
           </motion.p>
-          <motion.button 
-            className="hero-button"
-            initial={{ y: 20, opacity: 0 }}
+          <motion.div
+            className="flex flex-wrap justify-center gap-6"
+            initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
-            Shop Now
-          </motion.button>
-        </div>
-      </motion.div>
-
-      {/* Categories Section */}
-      <motion.div 
-        className="categories-section"
-        variants={itemVariants}
-      >
-        <div className="section-header">
-          <h2 className="section-title">Shop by Category</h2>
-          <p className="section-subtitle">Find the perfect outfit for any occasion</p>
-        </div>
-        
-        <div className="categories-grid">
-          <motion.div 
-            className="category-card"
-            whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ duration: 0.3 }}
-          >
-            <img 
-              src="https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" 
-              alt="Men's Collection" 
-              className="category-image"
-            />
-            <div className="category-content">
-              <h3 className="category-title">Men's Collection</h3>
-              <p className="category-description">Shirts, jeans, jackets, and more</p>
-              <motion.button 
-                className="category-link"
-                onClick={() => scrollToSection(mensRef)}
-                whileHover={{ x: 5 }}
-              >
-                Explore Collection <FaArrowRight className="category-link-icon" />
-              </motion.button>
-              <Link to="/mens" className="category-link category-link-page">
-                Shop Men's <FaArrowRight className="category-link-icon" />
-              </Link>
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            className="category-card"
-            whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-            transition={{ duration: 0.3 }}
-          >
-            <img 
-              src="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-              alt="Women's Collection" 
-              className="category-image"
-            />
-            <div className="category-content">
-              <h3 className="category-title">Women's Collection</h3>
-              <p className="category-description">Dresses, tops, skirts, and more</p>
-              <motion.button 
-                className="category-link"
-                onClick={() => scrollToSection(womensRef)}
-                whileHover={{ x: 5 }}
-              >
-                Explore Collection <FaArrowRight className="category-link-icon" />
-              </motion.button>
-              <Link to="/womens" className="category-link category-link-page">
-                Shop Women's <FaArrowRight className="category-link-icon" />
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* Men's Collection Section */}
-      <div id="mens-section" ref={mensRef}>
-        <motion.div 
-          className="collection-section"
-          variants={itemVariants}
-        >
-          <div className="section-header">
-            <h2 className="section-title">Men's Collection</h2>
-            <p className="section-subtitle">Premium clothing for the modern man</p>
-          </div>
-          
-          <div className="products-grid">
-            {displayProducts
-              .filter(product => product.category.includes("Men"))
-              .slice(0, 4)
-              .map((product) => (
-                <motion.div 
-                  key={product._id}
-                  className="product-card-container"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  whileHover={{ 
-                    y: -10,
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  <ProductCard product={product} />
-                  
-                  {/* Size and Color Options */}
-                  <motion.div 
-                    className="product-options"
-                    initial={{ opacity: 0, height: 0 }}
-                    whileHover={{ opacity: 1, height: 'auto' }}
-                  >
-                    <div className="product-sizes">
-                      <FaRuler className="product-option-icon" />
-                      <div className="size-options">
-                        {product.sizes && product.sizes.map(size => (
-                          <span key={size} className="size-option">{size}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="product-colors">
-                      {product.colors && product.colors.map(color => (
-                        <span 
-                          key={color} 
-                          className="color-option"
-                          style={{ 
-                            backgroundColor: color.toLowerCase(),
-                            border: color.toLowerCase() === 'white' ? '1px solid #e5e7eb' : 'none'
-                          }}
-                          title={color}
-                        ></span>
-                      ))}
-                    </div>
-                  </motion.div>
-                </motion.div>
-              ))}
-          </div>
-          
-          <motion.div 
-            className="view-more-container"
-            whileHover={{ y: -5 }}
-          >
-            <Link to="/mens" className="view-more-button">
-              View All Men's Collection <FaArrowRight className="view-more-icon" />
+            <Link
+              to="/mens"
+              className="px-8 py-4 bg-black/80 backdrop-blur-sm text-white text-lg font-semibold rounded-full hover:bg-black transition-all duration-300 hover:scale-105 transform shadow-lg hover:shadow-xl"
+            >
+              Shop Men
+            </Link>
+            <Link
+              to="/womens"
+              className="px-8 py-4 bg-white/90 backdrop-blur-sm text-black text-lg font-semibold rounded-full hover:bg-white transition-all duration-300 hover:scale-105 transform shadow-lg hover:shadow-xl"
+            >
+              Shop Women
             </Link>
           </motion.div>
-        </motion.div>
-      </div>
-      
-      {/* Women's Collection Section */}
-      <div id="womens-section" ref={womensRef}>
+        </div>
+      </section>
+
+      {/* Category Split Banner */}
+      <motion.section 
+        className="w-full grid grid-cols-1 md:grid-cols-2 gap-0 mt-20"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ amount: 0.3 }}
+      >
         <motion.div 
-          className="collection-section"
-          variants={itemVariants}
+          className="relative h-[500px] overflow-hidden"
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="section-header">
-            <h2 className="section-title">Women's Collection</h2>
-            <p className="section-subtitle">Elegant designs for the modern woman</p>
+          <div
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
+            style={{
+              backgroundImage: "url('https://images.pexels.com/photos/1342609/pexels-photo-1342609.jpeg?auto=compress&cs=tinysrgb&w=1920')"
+            }}
+          >
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white">
+                Men's Collection
+              </h3>
+              <Link
+                to="/mens"
+                className="bg-white text-black px-8 py-4 hover:bg-gray-100 transition-all duration-300"
+              >
+                Shop Men's Collection
+              </Link>
+            </div>
           </div>
+        </motion.div>
+
+        <motion.div 
+          className="relative h-[500px] overflow-hidden"
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
+            style={{
+              backgroundImage: "url('https://images.pexels.com/photos/949670/pexels-photo-949670.jpeg?auto=compress&cs=tinysrgb&w=1920')"
+            }}
+          >
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white">
+                Women's Collection
+              </h3>
+              <Link
+                to="/womens"
+                className="bg-white text-black px-8 py-4 hover:bg-gray-100 transition-all duration-300"
+              >
+                Shop Women's Collection
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      </motion.section>
+
+      {/* New Arrivals Section */}
+      <motion.section 
+        className="w-full py-24 px-4 sm:px-8 bg-gray-50 mt-20"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ amount: 0.2 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="w-full max-w-7xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-16">
+            New Arrivals
+          </h2>
           
-          <div className="products-grid">
-            {displayProducts
-              .filter(product => product.category.includes("Women"))
-              .slice(0, 4)
-              .map((product) => (
-                <motion.div 
-                  key={product._id}
-                  className="product-card-container"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  whileHover={{ 
-                    y: -10,
-                    transition: { duration: 0.2 }
-                  }}
+          <div className="w-full overflow-hidden relative">
+            <motion.div 
+              className="flex gap-6 px-4"
+              initial={{ x: "0%" }}
+              animate={{ x: "-100%" }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+            >
+              {[...fashionImages, ...fashionImages].map((image, index) => (
+                <motion.div
+                  key={index}
+                  className="relative flex-shrink-0 w-[300px] h-[400px] overflow-hidden group"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <ProductCard product={product} />
-                  
-                  {/* Size and Color Options */}
-                  <motion.div 
-                    className="product-options"
-                    initial={{ opacity: 0, height: 0 }}
-                    whileHover={{ opacity: 1, height: 'auto' }}
-                  >
-                    <div className="product-sizes">
-                      <FaRuler className="product-option-icon" />
-                      <div className="size-options">
-                        {product.sizes && product.sizes.map(size => (
-                          <span key={size} className="size-option">{size}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="product-colors">
-                      {product.colors && product.colors.map(color => (
-                        <span 
-                          key={color} 
-                          className="color-option"
-                          style={{ 
-                            backgroundColor: color.toLowerCase(),
-                            border: color.toLowerCase() === 'white' ? '1px solid #e5e7eb' : 'none'
-                          }}
-                          title={color}
-                        ></span>
-                      ))}
-                    </div>
-                  </motion.div>
+                  <img
+                    src={image.url}
+                    alt={image.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-4 left-4 right-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="text-lg font-medium">{image.title}</h3>
+                    <Link 
+                      to="/collection" 
+                      className="text-sm text-white/80 hover:text-white mt-1 inline-block"
+                    >
+                      View Collection →
+                    </Link>
+                  </div>
                 </motion.div>
               ))}
+            </motion.div>
           </div>
-          
+
+          {loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+              {[...Array(4)].map((_, index) => (
+                <motion.div 
+                  key={index}
+                  className="animate-pulse bg-white rounded-xl p-6"
+                >
+                  <div className="bg-gray-200 rounded-lg aspect-[3/4] mb-6"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </motion.section>
+
+      {/* Blog Articles Section */}
+      <section className="w-full py-24 px-4 sm:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Article 1 */}
+            <motion.article
+              className="group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="aspect-[3/4] overflow-hidden mb-6">
+                <img
+                  src="https://images.pexels.com/photos/2043590/pexels-photo-2043590.jpeg"
+                  alt="Office Fashion Guide"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  style={{ filter: 'brightness(0.95) contrast(1.05)' }}
+                />
+              </div>
+              <p className="text-gray-500 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+                SEPTEMBER 19, 2024
+              </p>
+              <h3 className="text-xl mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                HOW TO DRESS FOR THE OFFICE?
+              </h3>
+              <p className="text-gray-600 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                Choosing the right outfit for the office can sometimes be a challenge...
+              </p>
+              <a 
+                href="/blog/office-fashion" 
+                className="text-sm uppercase tracking-wider border-b border-black pb-1 inline-block hover:opacity-70 transition-opacity"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                READ MORE
+              </a>
+            </motion.article>
+
+            {/* Article 2 */}
+            <motion.article
+              className="group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="aspect-[3/4] overflow-hidden mb-6">
+                <img
+                  src="https://images.pexels.com/photos/2613260/pexels-photo-2613260.jpeg"
+                  alt="Skirt Length Guide"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  style={{ filter: 'brightness(0.95) contrast(1.05)' }}
+                />
+              </div>
+              <p className="text-gray-500 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+                SEPTEMBER 19, 2024
+              </p>
+              <h3 className="text-xl mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                HOW TO CHOOSE THE RIGHT SKIRT LENGTH?
+              </h3>
+              <p className="text-gray-600 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                The right skirt length can enhance your figure...
+              </p>
+              <a 
+                href="/blog/skirt-guide" 
+                className="text-sm uppercase tracking-wider border-b border-black pb-1 inline-block hover:opacity-70 transition-opacity"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                READ MORE
+              </a>
+            </motion.article>
+
+            {/* Article 3 */}
+            <motion.article
+              className="group"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="aspect-[3/4] overflow-hidden mb-6">
+                <img
+                  src="https://images.pexels.com/photos/2901215/pexels-photo-2901215.jpeg"
+                  alt="Blazer Style Guide"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  style={{ filter: 'brightness(0.95) contrast(1.05)' }}
+                />
+              </div>
+              <p className="text-gray-500 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+                SEPTEMBER 19, 2024
+              </p>
+              <h3 className="text-xl mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+                BLAZER AND OFFICE STYLE
+              </h3>
+              <p className="text-gray-600 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                The blazer is a staple piece in office fashion...
+              </p>
+              <a 
+                href="/blog/blazer-guide" 
+                className="text-sm uppercase tracking-wider border-b border-black pb-1 inline-block hover:opacity-70 transition-opacity"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+              >
+                READ MORE
+              </a>
+            </motion.article>
+          </div>
+        </div>
+      </section>
+
+      {/* Brand Logo Slider */}
+      <div className="w-full py-20 bg-white overflow-hidden border-t border-gray-100">
+        <div className="relative w-full">
           <motion.div 
-            className="view-more-container"
-            whileHover={{ y: -5 }}
+            className="flex items-center"
+            animate={{
+              x: ["-100%", "0%"]
+            }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 30,
+                ease: "linear"
+              }
+            }}
+            style={{
+              width: "fit-content"
+            }}
           >
-            <Link to="/womens" className="view-more-button">
-              View All Women's Collection <FaArrowRight className="view-more-icon" />
-            </Link>
+            {/* Multiple sets of logos for seamless infinite scroll */}
+            {[...Array(4)].map((_, groupIndex) => (
+              <div key={groupIndex} className="flex items-center">
+                <div className="flex gap-32 items-center mx-16">
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity" style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: "3px" }}>lalupa</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity" style={{ fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "1px" }}>nife</div>
+                  <div className="text-2xl font-light opacity-80 hover:opacity-100 transition-opacity tracking-[0.3em]">LF</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity tracking-wider" style={{ fontFamily: "'Didot', serif" }}>FIGL</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity" style={{ fontFamily: "'Alex Brush', cursive" }}>Lanty</div>
+                </div>
+              </div>
+            ))}
           </motion.div>
-        </motion.div>
+        </div>
       </div>
-      
-      {/* Featured Products Section */}
-      <motion.div 
-        className="featured-section"
-        variants={itemVariants}
-      >
-        <div className="section-header">
-          <h2 className="section-title">Featured Products</h2>
-          <p className="section-subtitle">Handpicked items from our latest collection</p>
-        </div>
-        
-        <div className="products-grid">
-          {displayProducts.slice(0, 4).map((product) => (
-            <motion.div 
-              key={product._id}
-              className="product-card-container"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              whileHover={{ y: -10 }}
-            >
-              <ProductCard product={product} />
-              
-              {/* Size and Color Options */}
-              <motion.div 
-                className="product-options"
-                initial={{ opacity: 0, height: 0 }}
-                whileHover={{ opacity: 1, height: 'auto' }}
-              >
-                <div className="product-sizes">
-                  <FaRuler className="product-option-icon" />
-                  <div className="size-options">
-                    {product.sizes && product.sizes.map(size => (
-                      <span key={size} className="size-option">{size}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="product-colors">
-                  {product.colors && product.colors.map(color => (
-                    <span 
-                      key={color} 
-                      className="color-option"
-                      style={{ 
-                        backgroundColor: color.toLowerCase(),
-                        border: color.toLowerCase() === 'white' ? '1px solid #e5e7eb' : 'none'
-                      }}
-                      title={color}
-                    ></span>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
 
-      {/* Trending Section */}
-      <motion.div 
-        className="trending-section"
-        variants={itemVariants}
-      >
-        <div className="trending-header">
-          <h2 className="trending-title">Trending Now</h2>
-          <Link to="/products" className="view-all">
-            View All <FaArrowRight className="view-all-icon" />
-          </Link>
-        </div>
-        
-        <div className="products-grid">
-          {displayProducts.slice(4, 8).map((product) => (
-            <motion.div 
-              key={product._id}
-              className="product-card-container"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              whileHover={{ y: -10 }}
-            >
-              <ProductCard product={product} />
-              
-              {/* Size and Color Options */}
-              <motion.div 
-                className="product-options"
-                initial={{ opacity: 0, height: 0 }}
-                whileHover={{ opacity: 1, height: 'auto' }}
-              >
-                <div className="product-sizes">
-                  <FaRuler className="product-option-icon" />
-                  <div className="size-options">
-                    {product.sizes && product.sizes.map(size => (
-                      <span key={size} className="size-option">{size}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="product-colors">
-                  {product.colors && product.colors.map(color => (
-                    <span 
-                      key={color} 
-                      className="color-option"
-                      style={{ 
-                        backgroundColor: color.toLowerCase(),
-                        border: color.toLowerCase() === 'white' ? '1px solid #e5e7eb' : 'none'
-                      }}
-                      title={color}
-                    ></span>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+      {/* Product Showcase Carousel */}
+      <section className="w-full py-16 bg-white overflow-hidden">
+        <div className="max-w-[1400px] mx-auto px-4">
+          <div className="relative">
+            <div className="flex items-center justify-center">
+              <div className="relative flex items-center gap-2">
+                {[-2, -1, 0, 1, 2].map((offset) => {
+                  const index = (activeIndex + offset + showcaseItems.length) % showcaseItems.length;
+                  const item = showcaseItems[index];
+                  const isCenter = offset === 0;
 
-      {/* Newsletter Section */}
-      <motion.div 
-        className="newsletter-section"
-        variants={itemVariants}
+                  return (
+                    <motion.div
+                      key={item.id}
+                      className="relative w-[280px] h-[400px] flex-shrink-0"
+                      initial={false}
+                      animate={{
+                        scale: 1,
+                        opacity: isCenter ? 1 : 0.9,
+                        x: offset * 290
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30
+                      }}
+                      style={{
+                        transformOrigin: 'center center'
+                      }}
+                    >
+                      <div className="relative w-full h-full overflow-hidden">
+                        {isCenter && item.type === 'video' ? (
+                          <VideoComponent src={item.videoSrc} poster={item.poster || item.image} isNext={false} />
+                        ) : (
+                          <img
+                            src={item.image || item.poster}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
+                          <p className="text-white/90 text-xs uppercase tracking-wider mb-1">{item.brand}</p>
+                          <h3 className="text-white text-sm font-medium mb-1">{item.title}</h3>
+                          <p className="text-white text-sm font-bold">{item.price}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all z-10"
+              aria-label="Previous"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-md transition-all z-10"
+              aria-label="Next"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Collection Section */}
+      <motion.section 
+        className="w-full min-h-screen flex flex-col md:flex-row"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
       >
-        <h2 className="newsletter-title">Subscribe to Our Newsletter</h2>
-        <p className="newsletter-description">
-          Stay updated with our latest collections, exclusive offers, and fashion tips.
-        </p>
-        
-        <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
-          <input 
-            type="email" 
-            className="newsletter-input" 
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+        {/* Left Side - Image */}
+        <motion.div 
+          className="w-full md:w-1/2 h-screen relative overflow-hidden"
+          initial={{ x: -50, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <div 
+            className="absolute inset-0 bg-[#F5E6E0] z-10 p-12 flex flex-col justify-center"
+            style={{ 
+              backgroundColor: 'rgba(245, 230, 224, 0.7)',
+              backdropFilter: 'brightness(1.1) contrast(1.1)'
+            }}
+          >
+            <motion.p 
+              className="text-sm uppercase tracking-widest mb-4 text-gray-800 font-medium"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Most-loved collections
+            </motion.p>
+            <motion.h2 
+              className="text-6xl font-light mb-6 text-gray-900"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              COSY &<br />COMFORT
+            </motion.h2>
+            <motion.button
+              className="bg-black text-white px-8 py-4 w-fit hover:bg-gray-900 transition-colors shadow-lg"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              onClick={() => window.location.href = '/collection'}
+            >
+              DISCOVER NOW
+            </motion.button>
+          </div>
+          <img 
+            src="https://images.pexels.com/photos/6626903/pexels-photo-6626903.jpeg"
+            alt="Cosy Collection"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              filter: 'brightness(1.1) contrast(1.1)',
+              objectPosition: 'center'
+            }}
+            onError={(e) => {
+              e.target.src = "https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg";
+            }}
           />
-          <motion.button 
-            type="submit" 
-            className="newsletter-button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FaPaperPlane />
-          </motion.button>
-        </form>
-      </motion.div>
+        </motion.div>
+
+        {/* Right Side - Video */}
+        <motion.div 
+          className="w-full md:w-1/2 h-screen relative overflow-hidden"
+          initial={{ x: 50, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <div className="absolute inset-0 w-full h-full">
+            {!videoError ? (
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                controls={false}
+                onLoadedData={handleVideoLoad}
+                onError={handleVideoError}
+                poster="https://images.pexels.com/photos/2896840/pexels-photo-2896840.jpeg"
+              >
+                <source 
+                  src="/videos/fashion-runway.mp4"
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img 
+                src="https://images.pexels.com/photos/2896840/pexels-photo-2896840.jpeg"
+                alt="Fashion Runway"
+                className="w-full h-full object-cover"
+              />
+            )}
+            <div 
+              className={`absolute inset-0 transition-opacity duration-500 ${
+                videoLoaded ? 'bg-gradient-to-r from-black/20 to-transparent' : 'bg-black/40'
+              }`}
+            />
+            {!videoLoaded && !videoError && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </motion.section>
+      
+      {/* Inclusivity Section */}
+      <InclusivityShowcase />
+      
+      {/* Product Showcase Section */}
+      <ProductShowcase />
+      
     </motion.div>
   );
 };

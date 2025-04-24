@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaPaperPlane } from 'react-icons/fa';
-import './Contact.css';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -78,16 +77,16 @@ const Contact = () => {
   };
 
   return (
-    <div className="contact-container">
+    <div className="bg-background-alt text-text-primary font-sans py-12">
       {/* Hero Section */}
       <motion.section 
-        className="contact-hero"
+        className="text-center max-w-7xl mx-auto px-6 mb-12"
         variants={fadeIn}
         initial="hidden"
         animate="visible"
       >
         <motion.h1 
-          className="contact-hero-title"
+          className="text-4xl md:text-5xl font-bold mb-4 text-text-primary inline-block relative after:content-[''] after:absolute after:bottom-[-8px] after:left-1/2 after:transform after:-translate-x-1/2 after:w-20 after:h-1 after:bg-gradient-to-r after:from-primary after:to-secondary after:rounded-full"
           variants={slideUp}
           initial="hidden"
           animate="visible"
@@ -95,7 +94,7 @@ const Contact = () => {
           Contact Us
         </motion.h1>
         <motion.p 
-          className="contact-hero-subtitle"
+          className="text-lg text-text-secondary max-w-3xl mx-auto"
           variants={slideUp}
           initial="hidden"
           animate="visible"
@@ -106,78 +105,79 @@ const Contact = () => {
       </motion.section>
 
       {/* Main Content */}
-      <div className="contact-content">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr,2fr] gap-6 mb-16">
         {/* Contact Information */}
         <motion.div 
-          className="contact-info"
+          className="bg-white rounded-lg shadow-md p-8"
           variants={slideUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
-          <h2 className="contact-info-title">Get In Touch</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-text-primary">Get In Touch</h2>
           
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
+            className="space-y-6"
           >
             <motion.div 
-              className="contact-info-item"
+              className="flex items-start gap-4"
               variants={slideUp}
             >
-              <div className="contact-info-icon">
-                <FaMapMarkerAlt />
+              <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <FaMapMarkerAlt className="text-lg" />
               </div>
-              <div className="contact-info-content">
-                <h3>Our Location</h3>
-                <p>123 Fashion Street</p>
-                <p>New York, NY 10001</p>
-                <p>United States</p>
+              <div>
+                <h3 className="text-lg font-semibold mb-2 text-text-primary">Our Location</h3>
+                <p className="text-text-secondary">123 Fashion Street</p>
+                <p className="text-text-secondary">New York, NY 10001</p>
+                <p className="text-text-secondary">United States</p>
               </div>
             </motion.div>
             
             <motion.div 
-              className="contact-info-item"
+              className="flex items-start gap-4"
               variants={slideUp}
             >
-              <div className="contact-info-icon">
-                <FaPhone />
+              <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <FaPhone className="text-lg" />
               </div>
-              <div className="contact-info-content">
-                <h3>Phone</h3>
-                <p>+1 (555) 123-4567</p>
-                <p>+1 (555) 765-4321</p>
+              <div>
+                <h3 className="text-lg font-semibold mb-2 text-text-primary">Phone</h3>
+                <p className="text-text-secondary">+1 (555) 123-4567</p>
+                <p className="text-text-secondary">+1 (555) 765-4321</p>
               </div>
             </motion.div>
             
             <motion.div 
-              className="contact-info-item"
+              className="flex items-start gap-4"
               variants={slideUp}
             >
-              <div className="contact-info-icon">
-                <FaEnvelope />
+              <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <FaEnvelope className="text-lg" />
               </div>
-              <div className="contact-info-content">
-                <h3>Email</h3>
-                <p>info@driftx.com</p>
-                <p>support@driftx.com</p>
+              <div>
+                <h3 className="text-lg font-semibold mb-2 text-text-primary">Email</h3>
+                <p className="text-text-secondary">info@driftx.com</p>
+                <p className="text-text-secondary">support@driftx.com</p>
               </div>
             </motion.div>
             
             <motion.div 
-              className="contact-info-item"
+              className="flex items-start gap-4"
               variants={slideUp}
             >
-              <div className="contact-info-icon">
-                <FaClock />
+              <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <FaClock className="text-lg" />
               </div>
-              <div className="contact-info-content">
-                <h3>Business Hours</h3>
-                <p>Monday - Friday: 9am - 6pm</p>
-                <p>Saturday: 10am - 4pm</p>
-                <p>Sunday: Closed</p>
+              <div>
+                <h3 className="text-lg font-semibold mb-2 text-text-primary">Business Hours</h3>
+                <p className="text-text-secondary">Monday - Friday: 9am - 6pm</p>
+                <p className="text-text-secondary">Saturday: 10am - 4pm</p>
+                <p className="text-text-secondary">Sunday: Closed</p>
               </div>
             </motion.div>
           </motion.div>
@@ -185,18 +185,18 @@ const Contact = () => {
         
         {/* Contact Form */}
         <motion.div 
-          className="contact-form-container"
+          className="bg-white rounded-lg shadow-md p-8"
           variants={slideUp}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           transition={{ delay: 0.2 }}
         >
-          <h2 className="contact-form-title">Send Us a Message</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-text-primary">Send Us a Message</h2>
           
           {submitSuccess && (
             <motion.div 
-              className="contact-success-message"
+              className="bg-success/10 text-success p-4 rounded-md mb-6 border border-success/20"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -205,10 +205,10 @@ const Contact = () => {
             </motion.div>
           )}
           
-          <form onSubmit={handleSubmit} className="contact-form">
-            <div className="contact-form-row">
-              <div className="contact-form-group">
-                <label htmlFor="name" className="contact-form-label">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2 text-text-primary">
                   Your Name
                 </label>
                 <motion.input
@@ -219,13 +219,13 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="contact-form-input"
+                  className="w-full px-4 py-3 rounded-md border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   placeholder="John Doe"
                 />
               </div>
               
-              <div className="contact-form-group">
-                <label htmlFor="email" className="contact-form-label">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2 text-text-primary">
                   Your Email
                 </label>
                 <motion.input
@@ -236,14 +236,14 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="contact-form-input"
+                  className="w-full px-4 py-3 rounded-md border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   placeholder="john@example.com"
                 />
               </div>
             </div>
             
-            <div className="contact-form-group">
-              <label htmlFor="subject" className="contact-form-label">
+            <div>
+              <label htmlFor="subject" className="block text-sm font-medium mb-2 text-text-primary">
                 Subject
               </label>
               <motion.input
@@ -254,13 +254,13 @@ const Contact = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="contact-form-input"
-                placeholder="How can we help you?"
+                className="w-full px-4 py-3 rounded-md border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                placeholder="How can we help?"
               />
             </div>
             
-            <div className="contact-form-group">
-              <label htmlFor="message" className="contact-form-label">
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium mb-2 text-text-primary">
                 Message
               </label>
               <motion.textarea
@@ -270,27 +270,27 @@ const Contact = () => {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                rows="5"
-                className="contact-form-textarea"
-                placeholder="Your message here..."
-              ></motion.textarea>
+                rows={6}
+                className="w-full px-4 py-3 rounded-md border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-y min-h-[150px]"
+                placeholder="Write your message here..."
+              />
             </div>
             
             <motion.button
               type="submit"
               disabled={isSubmitting}
-              className="contact-form-button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-md hover:-translate-y-1 hover:shadow-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none"
+              whileHover={{ y: -4 }}
+              whileTap={{ y: 0 }}
             >
               {isSubmitting ? (
                 <>
-                  <div className="contact-form-spinner"></div>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                   Sending...
                 </>
               ) : (
                 <>
-                  <FaPaperPlane className="contact-form-button-icon" />
+                  <FaPaperPlane className="mr-2" />
                   Send Message
                 </>
               )}
@@ -298,98 +298,6 @@ const Contact = () => {
           </form>
         </motion.div>
       </div>
-      
-      {/* Map Section */}
-      <motion.div 
-        className="contact-map"
-        variants={slideUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ delay: 0.4 }}
-      >
-        <h2 className="contact-map-title">Find Us</h2>
-        <div className="contact-map-container">
-          <div className="contact-map-placeholder">
-            <motion.div
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 100, 
-                delay: 0.5 
-              }}
-            >
-              <FaMapMarkerAlt className="contact-map-icon" />
-              <h3 className="contact-map-text">Map Placeholder</h3>
-              <p className="contact-map-description">
-                In a real application, an interactive map would be displayed here.<br />
-                Our store is located at 123 Fashion Street, New York, NY 10001.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
-      
-      {/* FAQ Section */}
-      <motion.div 
-        className="contact-faq"
-        variants={slideUp}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ delay: 0.6 }}
-      >
-        <h2 className="contact-faq-title">Frequently Asked Questions</h2>
-        
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <motion.div 
-            className="contact-faq-item"
-            variants={slideUp}
-          >
-            <h3 className="contact-faq-question">What are your shipping options?</h3>
-            <p className="contact-faq-answer">
-              We offer standard shipping (3-5 business days), express shipping (1-2 business days), and same-day delivery in select areas. Shipping costs vary based on location and chosen method.
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className="contact-faq-item"
-            variants={slideUp}
-          >
-            <h3 className="contact-faq-question">How can I track my order?</h3>
-            <p className="contact-faq-answer">
-              Once your order ships, you'll receive a tracking number via email. You can also view your order status by logging into your account and visiting the "My Orders" section.
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className="contact-faq-item"
-            variants={slideUp}
-          >
-            <h3 className="contact-faq-question">What is your return policy?</h3>
-            <p className="contact-faq-answer">
-              We accept returns within 30 days of purchase. Items must be in original condition with tags attached. Please visit our Returns page for more details on the process.
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className="contact-faq-item"
-            variants={slideUp}
-          >
-            <h3 className="contact-faq-question">Do you offer international shipping?</h3>
-            <p className="contact-faq-answer">
-              Yes, we ship to most countries worldwide. International shipping typically takes 7-14 business days, and customs fees may apply depending on your location.
-            </p>
-          </motion.div>
-        </motion.div>
-      </motion.div>
     </div>
   );
 };

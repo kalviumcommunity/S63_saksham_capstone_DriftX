@@ -12,7 +12,6 @@ import {
   FaChevronDown,
   FaSpinner
 } from "react-icons/fa";
-import "./Mens.css";
 
 const Mens = () => {
   const [products, setProducts] = useState([]);
@@ -200,191 +199,155 @@ const Mens = () => {
     : sampleProducts;
 
   return (
-    <div className="mens-container">
-      {/* Header Section */}
-      <motion.div 
-        className="mens-header"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <img 
-          src="https://images.unsplash.com/photo-1617137968427-85924c800a22?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" 
-          alt="Men's Collection" 
-          className="mens-header-image"
-        />
-        <div className="mens-header-content">
-          <motion.h1 
-            className="mens-title"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
           >
-            Men's Collection
-          </motion.h1>
-          <motion.p 
-            className="mens-subtitle"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            Discover our exclusive collection for men featuring premium quality clothing and accessories.
-          </motion.p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Men's Collection</h1>
+            <p className="text-xl text-blue-100">Discover our latest styles and trends</p>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Filter Section */}
-      <motion.div 
-        className="filter-section"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <div className="filter-options">
-          {categories.map((category) => (
-            <motion.button
-              key={category.id}
-              className={`filter-button ${activeCategory === category.id ? 'active' : ''}`}
-              onClick={() => setActiveCategory(category.id)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span style={{ marginRight: '0.5rem' }}>{category.icon}</span>
-              {category.name}
-            </motion.button>
-          ))}
-        </div>
-        
-        <div className={`sort-dropdown ${sortMenuOpen ? 'open' : ''}`}>
-          <motion.button 
-            className="sort-button"
-            onClick={() => setSortMenuOpen(!sortMenuOpen)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <FaSort style={{ marginRight: '0.5rem' }} />
-            Sort By
-            <FaChevronDown className="sort-icon" style={{ marginLeft: '0.5rem' }} />
-          </motion.button>
-          
-          {sortMenuOpen && (
-            <AnimatePresence>
-              <motion.div 
-                className="sort-menu"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Filters Sidebar */}
+          <div className="w-full md:w-64 space-y-6">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-lg font-semibold mb-4">Categories</h2>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <motion.button
+                    key={category.id}
+                    whileHover={{ x: 5 }}
+                    className={`flex items-center w-full p-3 rounded-lg transition-colors ${
+                      activeCategory === category.id
+                        ? "bg-blue-100 text-blue-700"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => setActiveCategory(category.id)}
+                  >
+                    <span className="mr-3 text-blue-600">{category.icon}</span>
+                    <span>{category.name}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Products Grid */}
+          <div className="flex-1">
+            {/* Sort Options */}
+            <div className="flex justify-between items-center mb-6">
+              <div className="relative">
+                <button
+                  onClick={() => setSortMenuOpen(!sortMenuOpen)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <FaSort className="text-blue-600" />
+                  <span>Sort by: {sortOption.replace("-", " ")}</span>
+                  <FaChevronDown className={`transition-transform ${sortMenuOpen ? "rotate-180" : ""}`} />
+                </button>
+                {sortMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute z-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-2"
+                  >
+                    {["latest", "price-low", "price-high", "name"].map((option) => (
+                      <button
+                        key={option}
+                        className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
+                          sortOption === option ? "text-blue-600" : ""
+                        }`}
+                        onClick={() => handleSortChange(option)}
+                      >
+                        {option.replace("-", " ")}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <FaSpinner className="animate-spin text-4xl text-blue-600" />
+              </div>
+            ) : (
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
-                <div 
-                  className={`sort-option ${sortOption === 'latest' ? 'active' : ''}`}
-                  onClick={() => handleSortChange('latest')}
-                >
-                  Latest
-                </div>
-                <div 
-                  className={`sort-option ${sortOption === 'price-low' ? 'active' : ''}`}
-                  onClick={() => handleSortChange('price-low')}
-                >
-                  Price: Low to High
-                </div>
-                <div 
-                  className={`sort-option ${sortOption === 'price-high' ? 'active' : ''}`}
-                  onClick={() => handleSortChange('price-high')}
-                >
-                  Price: High to Low
-                </div>
-                <div 
-                  className={`sort-option ${sortOption === 'name' ? 'active' : ''}`}
-                  onClick={() => handleSortChange('name')}
-                >
-                  Name: A to Z
-                </div>
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    key={product._id}
+                    variants={itemVariants}
+                    className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+                  >
+                    <Link to={`/product/${product._id}`}>
+                      <div className="relative h-64 overflow-hidden">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <button className="w-full bg-white text-blue-600 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors">
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+                        <p className="text-gray-600 text-sm mb-2">{product.category}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-blue-600">${product.price}</span>
+                          <div className="flex items-center text-yellow-400">
+                            <span className="mr-1">{product.rating}</span>
+                            <span>★</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
               </motion.div>
-            </AnimatePresence>
-          )}
-        </div>
-      </motion.div>
+            )}
 
-      {/* Products Section */}
-      {loading ? (
-        <motion.div 
-          className="empty-state"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <FaSpinner className="empty-icon loading-spinner" />
-          <h2 className="empty-title">Loading Products</h2>
-          <p className="empty-text">Please wait while we fetch the latest men's collection for you.</p>
-        </motion.div>
-      ) : (
-        <>
-          {filteredProducts.length === 0 ? (
-            <motion.div 
-              className="empty-state"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <FaShoppingBag className="empty-icon" />
-              <h2 className="empty-title">No Products Found</h2>
-              <p className="empty-text">
-                We couldn't find any products in this category. Check back later for new arrivals or try a different category.
-              </p>
-              <Link to="/" className="empty-button">
-                Explore Other Categories
-              </Link>
-            </motion.div>
-          ) : (
-            <motion.div 
-              className="products-grid"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {filteredProducts.map((product) => (
-                <motion.div 
-                  key={product._id}
-                  variants={itemVariants}
-                  whileHover={{ y: -10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          {filteredProducts.length > 0 && (
-            <motion.div 
-              className="load-more-container"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              <motion.button 
-                className="load-more-button"
+            {/* Load More Button */}
+            <div className="mt-12 text-center">
+              <button
                 onClick={handleLoadMore}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 disabled={loadingMore}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loadingMore ? (
-                  <>
-                    <FaSpinner className="loading-spinner" style={{ marginRight: '0.5rem' }} />
+                  <span className="flex items-center gap-2">
+                    <FaSpinner className="animate-spin" />
                     Loading...
-                  </>
+                  </span>
                 ) : (
-                  <>
-                    Load More Products
-                  </>
+                  "Load More"
                 )}
-              </motion.button>
-            </motion.div>
-          )}
-        </>
-      )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

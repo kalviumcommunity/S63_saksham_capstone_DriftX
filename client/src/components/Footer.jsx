@@ -1,214 +1,99 @@
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { 
-  FaFacebookF, 
-  FaTwitter, 
-  FaInstagram, 
-  FaPinterestP,
-  FaMapMarkerAlt,
-  FaPhoneAlt,
-  FaEnvelope,
-  FaClock,
-  FaCcVisa,
-  FaCcMastercard,
-  FaCcPaypal,
-  FaCcApplePay,
-  FaArrowRight
-} from "react-icons/fa";
-import "./Footer.css";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FaFacebookF, FaTwitter, FaInstagram, FaPinterestP, FaTiktok, FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal, FaCcDiscover } from 'react-icons/fa';
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-  
-  // Animation variants
-  const socialIconVariants = {
-    hover: { y: -5, scale: 1.1 },
-    tap: { scale: 0.95 }
-  };
-  
-  const linkVariants = {
-    hover: { x: 5, color: "#6366f1" },
-    tap: { scale: 0.98 }
-  };
-  
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-content">
-          {/* Company Info */}
-          <div className="footer-section">
-            <Link to="/" className="footer-logo">DriftX</Link>
-            <p className="footer-description">
-              Discover the latest trends in men's and women's fashion. Quality clothing for every occasion at affordable prices.
-            </p>
-            <div className="footer-social">
-              <motion.a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-icon"
-                variants={socialIconVariants}
-                whileHover="hover"
-                whileTap="tap"
-              >
-                <FaFacebookF />
-              </motion.a>
-              <motion.a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-icon"
-                variants={socialIconVariants}
-                whileHover="hover"
-                whileTap="tap"
-              >
-                <FaTwitter />
-              </motion.a>
-              <motion.a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-icon"
-                variants={socialIconVariants}
-                whileHover="hover"
-                whileTap="tap"
-              >
-                <FaInstagram />
-              </motion.a>
-              <motion.a 
-                href="https://pinterest.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-icon"
-                variants={socialIconVariants}
-                whileHover="hover"
-                whileTap="tap"
-              >
-                <FaPinterestP />
-              </motion.a>
-            </div>
-          </div>
-          
-          {/* Quick Links */}
-          <div className="footer-section">
-            <h3 className="footer-heading">Quick Links</h3>
-            <div className="footer-links">
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/" className="footer-link">Home</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/about" className="footer-link">About Us</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/contact" className="footer-link">Contact Us</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/profile" className="footer-link">My Account</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/cart" className="footer-link">Shopping Cart</Link>
-              </motion.div>
-            </div>
-          </div>
-          
-          {/* Categories */}
-          <div className="footer-section">
-            <h3 className="footer-heading">Categories</h3>
-            <div className="footer-links">
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/mens" className="footer-link">Men's Clothing</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/womens" className="footer-link">Women's Clothing</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/mens" className="footer-link">Men's Accessories</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/womens" className="footer-link">Women's Accessories</Link>
-              </motion.div>
-              <motion.div variants={linkVariants} whileHover="hover" whileTap="tap">
-                <Link to="/mens" className="footer-link">New Arrivals</Link>
-              </motion.div>
-            </div>
-          </div>
-          
-          {/* Contact Info */}
-          <div className="footer-section">
-            <h3 className="footer-heading">Contact Us</h3>
-            <div className="footer-contact">
-              <div className="footer-contact-item">
-                <FaMapMarkerAlt className="contact-icon" />
-                <span>123 Fashion Street, New York, NY 10001</span>
-              </div>
-              <div className="footer-contact-item">
-                <FaPhoneAlt className="contact-icon" />
-                <span>+1 (555) 123-4567</span>
-              </div>
-              <div className="footer-contact-item">
-                <FaEnvelope className="contact-icon" />
-                <span>support@driftx.com</span>
-              </div>
-              <div className="footer-contact-item">
-                <FaClock className="contact-icon" />
-                <span>Mon-Fri: 9AM - 6PM</span>
-              </div>
-              
-              <div className="footer-newsletter">
-                <h4 className="footer-heading">Newsletter</h4>
-                <p className="footer-description">Subscribe to get updates on new arrivals and special offers</p>
-                <form className="newsletter-form">
-                  <input 
-                    type="email" 
-                    placeholder="Your email address" 
-                    className="newsletter-input" 
-                    required 
-                  />
-                  <motion.button 
-                    type="submit" 
-                    className="newsletter-button"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <FaArrowRight />
-                  </motion.button>
-                </form>
-              </div>
-            </div>
-          </div>
+    <footer className="bg-[#FAF9F8] pt-16 pb-8">
+      {/* Newsletter Section */}
+      <div className="max-w-2xl mx-auto text-center mb-16">
+        <h3 className="text-lg mb-3 tracking-wide">JOIN OUR NEWSLETTER</h3>
+        <p className="text-sm text-gray-600 mb-6">Be the first to know about new collections and exclusive offers.</p>
+        <div className="flex justify-center gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="px-4 py-2 border border-gray-300 w-64 focus:outline-none focus:ring-1 focus:ring-black"
+          />
+          <button className="px-6 py-2 bg-black text-white uppercase text-sm tracking-wider hover:bg-gray-900 transition-colors">
+            Subscribe
+          </button>
         </div>
-        
-        <div className="footer-bottom">
-          <div className="footer-copyright">
-            &copy; {currentYear} <Link to="/">DriftX</Link>. All Rights Reserved.
-          </div>
-          <div className="footer-payment">
-            <motion.span 
-              className="payment-icon"
-              whileHover={{ y: -3, color: "#f9fafb" }}
-            >
-              <FaCcVisa />
-            </motion.span>
-            <motion.span 
-              className="payment-icon"
-              whileHover={{ y: -3, color: "#f9fafb" }}
-            >
-              <FaCcMastercard />
-            </motion.span>
-            <motion.span 
-              className="payment-icon"
-              whileHover={{ y: -3, color: "#f9fafb" }}
-            >
-              <FaCcPaypal />
-            </motion.span>
-            <motion.span 
-              className="payment-icon"
-              whileHover={{ y: -3, color: "#f9fafb" }}
-            >
-              <FaCcApplePay />
-            </motion.span>
-          </div>
+      </div>
+
+      {/* Navigation Grid */}
+      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
+        {/* Products */}
+        <div>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">Products</h4>
+          <ul className="space-y-2">
+            <li><Link to="/dress" className="text-sm text-gray-600 hover:text-black transition-colors">Dress</Link></li>
+            <li><Link to="/blazer" className="text-sm text-gray-600 hover:text-black transition-colors">Blazer</Link></li>
+            <li><Link to="/skirt" className="text-sm text-gray-600 hover:text-black transition-colors">Skirt</Link></li>
+            <li><Link to="/trousers" className="text-sm text-gray-600 hover:text-black transition-colors">Trousers</Link></li>
+            <li><Link to="/jumpsuits" className="text-sm text-gray-600 hover:text-black transition-colors">Jumpsuits</Link></li>
+          </ul>
         </div>
+
+        {/* Service */}
+        <div>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">Service</h4>
+          <ul className="space-y-2">
+            <li><Link to="/faq" className="text-sm text-gray-600 hover:text-black transition-colors">FAQ</Link></li>
+            <li><Link to="/shipping" className="text-sm text-gray-600 hover:text-black transition-colors">Shipping</Link></li>
+            <li><Link to="/contact" className="text-sm text-gray-600 hover:text-black transition-colors">Contact</Link></li>
+          </ul>
+        </div>
+
+        {/* Information */}
+        <div>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">Information</h4>
+          <ul className="space-y-2">
+            <li><Link to="/about" className="text-sm text-gray-600 hover:text-black transition-colors">About Us</Link></li>
+            <li><Link to="/returns" className="text-sm text-gray-600 hover:text-black transition-colors">Return and Refunds</Link></li>
+            <li><Link to="/legal" className="text-sm text-gray-600 hover:text-black transition-colors">Legal Area</Link></li>
+          </ul>
+        </div>
+
+        {/* About Us */}
+        <div>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">About Us</h4>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            We could not have created this store without the help of an amazing source of content and products. Visit our <Link to="/store" className="underline hover:text-black transition-colors">store page</Link> to find out where all the products used in this demo came from.
+          </p>
+        </div>
+      </div>
+
+      {/* Social Links */}
+      <div className="flex justify-center gap-6 mb-12">
+        <a href="#" className="text-gray-600 hover:text-black transition-colors"><FaFacebookF size={18} /></a>
+        <a href="#" className="text-gray-600 hover:text-black transition-colors"><FaTwitter size={18} /></a>
+        <a href="#" className="text-gray-600 hover:text-black transition-colors"><FaInstagram size={18} /></a>
+        <a href="#" className="text-gray-600 hover:text-black transition-colors"><FaPinterestP size={18} /></a>
+        <a href="#" className="text-gray-600 hover:text-black transition-colors"><FaTiktok size={18} /></a>
+      </div>
+
+      {/* Payment Methods */}
+      <div className="flex justify-center items-center gap-4 mb-16">
+        <FaCcVisa size={32} className="text-[#1A1F71]" />
+        <FaCcMastercard size={32} className="text-[#EB001B]" />
+        <FaCcAmex size={32} className="text-[#006FCF]" />
+        <FaCcPaypal size={32} className="text-[#003087]" />
+        <FaCcDiscover size={32} className="text-[#FF6000]" />
+      </div>
+
+      {/* Brand Name */}
+      <div className="text-center">
+        <h1 
+          className="text-[180px] md:text-[200px] leading-none font-light tracking-tight"
+          style={{
+            fontFamily: "'Didot', 'Bodoni MT', 'Noto Serif Display', serif",
+            fontWeight: 300,
+            letterSpacing: "-0.02em"
+          }}
+        >
+          DRIFTX
+        </h1>
       </div>
     </footer>
   );
