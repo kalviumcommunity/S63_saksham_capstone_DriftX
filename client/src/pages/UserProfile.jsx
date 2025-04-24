@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaUser, FaShoppingBag, FaHeart, FaEdit, FaKey, FaSignOutAlt, FaUpload } from 'react-icons/fa';
 import { logout } from '../redux/slices/userSlice';
-import './UserProfile.css';
 
 const UserProfile = () => {
   const dispatch = useDispatch();

@@ -4,8 +4,23 @@ meta {
   seq: 2
 }
 
-get {
-  url: http://localhost:5000/api/products
-  body: none
-  auth: inherit
+put {
+  url: http://localhost:5000/api/products/6
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: dummy-token-2
+}
+
+body:json {
+     {
+       "name": "Test Product",
+       "description": "This is a test product",
+       "price": 99.99,
+       "countInStock": 10,
+       "category": "Electronics",
+       "image": "test-product.jpg"
+     }
 }
