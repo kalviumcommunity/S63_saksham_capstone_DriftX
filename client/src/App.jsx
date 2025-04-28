@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 import './index.css'; // Import Tailwind CSS
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -16,28 +17,95 @@ import AdminProducts from './pages/AdminProducts';
 import AddProduct from './pages/AddProduct';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import PageTransition from './components/PageTransition';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, [pathname]);
+
+  return null;
+};
 
 const AppContent = () => {
   const location = useLocation();
   
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#2D2D2D]">
+      <ScrollToTop />
       <Navbar />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Home />} />
-          <Route path="/mens" element={<Mens />} />
-          <Route path="/womens" element={<Womens />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/edit/:id" element={<UpdateProduct />} />
-          <Route path="/admin/products" element={<AdminProducts />} />
-          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/" element={
+            <PageTransition>
+              <Home />
+            </PageTransition>
+          } />
+          <Route path="/mens" element={
+            <PageTransition>
+              <Mens />
+            </PageTransition>
+          } />
+          <Route path="/womens" element={
+            <PageTransition>
+              <Womens />
+            </PageTransition>
+          } />
+          <Route path="/login" element={
+            <PageTransition>
+              <Login />
+            </PageTransition>
+          } />
+          <Route path="/register" element={
+            <PageTransition>
+              <Register />
+            </PageTransition>
+          } />
+          <Route path="/cart" element={
+            <PageTransition>
+              <Cart />
+            </PageTransition>
+          } />
+          <Route path="/product/:id" element={
+            <PageTransition>
+              <ProductDetails />
+            </PageTransition>
+          } />
+          <Route path="/profile" element={
+            <PageTransition>
+              <UserProfile />
+            </PageTransition>
+          } />
+          <Route path="/about" element={
+            <PageTransition>
+              <About />
+            </PageTransition>
+          } />
+          <Route path="/contact" element={
+            <PageTransition>
+              <Contact />
+            </PageTransition>
+          } />
+          <Route path="/edit/:id" element={
+            <PageTransition>
+              <UpdateProduct />
+            </PageTransition>
+          } />
+          <Route path="/admin/products" element={
+            <PageTransition>
+              <AdminProducts />
+            </PageTransition>
+          } />
+          <Route path="/add-product" element={
+            <PageTransition>
+              <AddProduct />
+            </PageTransition>
+          } />
         </Routes>
       </AnimatePresence>
       <Footer />
