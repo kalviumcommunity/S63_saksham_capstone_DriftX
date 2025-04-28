@@ -190,7 +190,7 @@ const Home = () => {
 
   return (
     <motion.div 
-      className="w-full min-h-screen bg-white"
+      className="w-full min-h-screen bg-[#1E1E1E]"
       style={{ opacity, scale }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -198,79 +198,51 @@ const Home = () => {
     >
       {/* Hero Section */}
       <section className="relative w-full h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden">
-        <motion.div 
-          className="absolute inset-0 w-full h-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
+        {/* Video Background */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
         >
-          {!videoError ? (
-            <video
-              className="absolute inset-0 w-full h-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              onError={handleVideoError}
-              style={{ filter: "brightness(0.6)" }}
-              poster="https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg"
-            >
-              <source 
-                src="videos/saksham.mp4"
-                type="video/mp4"
-              />
-            </video>
-          ) : (
-            <div 
-              className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: "url('https://images.pexels.com/photos/1884584/pexels-photo-1884584.jpeg')",
-                filter: "brightness(0.6)"
-              }}
-            >
-              <div 
-                className="absolute inset-0"
-                style={{
-                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.6) 100%)',
-                  backdropFilter: 'blur(5px)'
-                }}
-              />
-            </div>
-          )}
-        </motion.div>
-        <div className="relative z-10 text-center text-white px-4 w-full max-w-7xl mx-auto">
+          <source src="/videos/aunty.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/40" />
+
+        {/* Hero Content */}
+        <div className="relative z-10 text-center text-white px-4">
           <motion.h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6"
-            initial={{ y: 20, opacity: 0 }}
+            className="text-6xl md:text-8xl font-bold mb-4"
+            initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
             DRIFTX
           </motion.h1>
           <motion.p
-            className="text-xl md:text-2xl mb-8 text-gray-200 drop-shadow-lg max-w-3xl mx-auto"
-            initial={{ x: 100, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-xl md:text-2xl mb-8"
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
             Discover luxury fashion that defines your unique personality
           </motion.p>
           <motion.div
-            className="flex flex-wrap justify-center gap-6"
-            initial={{ y: 50, opacity: 0 }}
+            className="flex gap-4 justify-center"
+            initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
           >
             <Link
               to="/mens"
-              className="px-8 py-4 bg-black/80 backdrop-blur-sm text-white text-lg font-semibold rounded-full hover:bg-black transition-all duration-300 hover:scale-105 transform shadow-lg hover:shadow-xl"
+              className="px-8 py-3 bg-black text-white rounded-full font-semibold hover:bg-white hover:text-black transition-all duration-300"
             >
               Shop Men
             </Link>
             <Link
               to="/womens"
-              className="px-8 py-4 bg-white/90 backdrop-blur-sm text-black text-lg font-semibold rounded-full hover:bg-white transition-all duration-300 hover:scale-105 transform shadow-lg hover:shadow-xl"
+              className="px-8 py-3 bg-white text-black rounded-full font-semibold hover:bg-black hover:text-white transition-all duration-300"
             >
               Shop Women
             </Link>
@@ -291,24 +263,64 @@ const Home = () => {
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <div
-            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
-            style={{
-              backgroundImage: "url('https://images.pexels.com/photos/1342609/pexels-photo-1342609.jpeg?auto=compress&cs=tinysrgb&w=1920')"
+          <div 
+            className="absolute inset-0 bg-[#F5E6E0] z-10 p-12 flex flex-col justify-center"
+            style={{ 
+              backgroundColor: 'rgba(245, 230, 224, 0.7)',
+              backdropFilter: 'brightness(1.1) contrast(1.1)'
             }}
           >
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center">
-              <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white">
-                Men's Collection
-              </h3>
-              <Link
-                to="/mens"
-                className="bg-white text-black px-8 py-4 hover:bg-gray-100 transition-all duration-300"
-              >
-                Shop Men's Collection
-              </Link>
-            </div>
+            <motion.p 
+              className="text-sm uppercase tracking-widest mb-4 text-gray-800 font-medium"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              Most-loved collections
+            </motion.p>
+            <motion.h2 
+              className="text-6xl font-light mb-6 text-gray-900"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              COSY &<br />COMFORT
+            </motion.h2>
+            <motion.button
+              className="bg-black text-white px-8 py-4 w-fit hover:bg-gray-900 transition-colors shadow-lg"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              onClick={() => window.location.href = '/collection'}
+            >
+              DISCOVER NOW
+            </motion.button>
           </div>
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            style={{
+              filter: 'brightness(1.1) contrast(1.1)',
+              objectPosition: 'center'
+            }}
+            onError={(e) => {
+              console.error("Video loading error:", e);
+              const fallbackImg = document.createElement('img');
+              fallbackImg.src = "https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg";
+              fallbackImg.alt = "Cosy Collection";
+              fallbackImg.className = "absolute inset-0 w-full h-full object-cover";
+              e.target.parentNode.replaceChild(fallbackImg, e.target);
+            }}
+          >
+            <source src="/videos/menny.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </motion.div>
 
         <motion.div 
@@ -317,37 +329,51 @@ const Home = () => {
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
-          <div
-            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
+          <video
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            autoPlay
+            muted
+            loop
+            playsInline
             style={{
-              backgroundImage: "url('https://images.pexels.com/photos/949670/pexels-photo-949670.jpeg?auto=compress&cs=tinysrgb&w=1920')"
+              filter: 'brightness(0.9) contrast(1.1)'
+            }}
+            onError={(e) => {
+              console.error("Video loading error:", e);
+              const fallbackImg = document.createElement('img');
+              fallbackImg.src = "https://images.pexels.com/photos/949670/pexels-photo-949670.jpeg";
+              fallbackImg.alt = "Women's Collection";
+              fallbackImg.className = "absolute inset-0 w-full h-full object-cover";
+              e.target.parentNode.replaceChild(fallbackImg, e.target);
             }}
           >
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center">
-              <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white">
-                Women's Collection
-              </h3>
-              <Link
-                to="/womens"
-                className="bg-white text-black px-8 py-4 hover:bg-gray-100 transition-all duration-300"
-              >
-                Shop Women's Collection
-              </Link>
-            </div>
+            <source src="/videos/penny.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center">
+            <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white">
+              Women's Collection
+            </h3>
+            <Link
+              to="/womens"
+              className="bg-white text-black px-8 py-4 hover:bg-gray-100 transition-all duration-300"
+            >
+              Shop Women's Collection
+            </Link>
           </div>
         </motion.div>
       </motion.section>
 
       {/* New Arrivals Section */}
       <motion.section 
-        className="w-full py-24 px-4 sm:px-8 bg-gray-50 mt-20"
+        className="w-full py-24 px-4 sm:px-8 bg-[#252525] mt-20"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ amount: 0.2 }}
         transition={{ duration: 0.8 }}
       >
         <div className="w-full max-w-7xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-16 text-white">
             New Arrivals
           </h2>
           
@@ -407,7 +433,7 @@ const Home = () => {
       </motion.section>
 
       {/* Blog Articles Section */}
-      <section className="w-full py-24 px-4 sm:px-8 bg-white">
+      <section className="w-full py-24 px-4 sm:px-8 bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Article 1 */}
@@ -426,18 +452,18 @@ const Home = () => {
                   style={{ filter: 'brightness(0.95) contrast(1.05)' }}
                 />
               </div>
-              <p className="text-gray-500 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-400 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
                 SEPTEMBER 19, 2024
               </p>
-              <h3 className="text-xl mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <h3 className="text-xl mb-3 font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
                 HOW TO DRESS FOR THE OFFICE?
               </h3>
-              <p className="text-gray-600 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-300 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
                 Choosing the right outfit for the office can sometimes be a challenge...
               </p>
               <a 
                 href="/blog/office-fashion" 
-                className="text-sm uppercase tracking-wider border-b border-black pb-1 inline-block hover:opacity-70 transition-opacity"
+                className="text-sm uppercase tracking-wider border-b border-white text-white pb-1 inline-block hover:opacity-70 transition-opacity"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 READ MORE
@@ -460,18 +486,18 @@ const Home = () => {
                   style={{ filter: 'brightness(0.95) contrast(1.05)' }}
                 />
               </div>
-              <p className="text-gray-500 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-400 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
                 SEPTEMBER 19, 2024
               </p>
-              <h3 className="text-xl mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <h3 className="text-xl mb-3 font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
                 HOW TO CHOOSE THE RIGHT SKIRT LENGTH?
               </h3>
-              <p className="text-gray-600 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-300 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
                 The right skirt length can enhance your figure...
               </p>
               <a 
                 href="/blog/skirt-guide" 
-                className="text-sm uppercase tracking-wider border-b border-black pb-1 inline-block hover:opacity-70 transition-opacity"
+                className="text-sm uppercase tracking-wider border-b border-white text-white pb-1 inline-block hover:opacity-70 transition-opacity"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 READ MORE
@@ -494,18 +520,18 @@ const Home = () => {
                   style={{ filter: 'brightness(0.95) contrast(1.05)' }}
                 />
               </div>
-              <p className="text-gray-500 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-400 text-sm mb-3" style={{ fontFamily: "'Inter', sans-serif" }}>
                 SEPTEMBER 19, 2024
               </p>
-              <h3 className="text-xl mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <h3 className="text-xl mb-3 font-medium text-white" style={{ fontFamily: "'Inter', sans-serif" }}>
                 BLAZER AND OFFICE STYLE
               </h3>
-              <p className="text-gray-600 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+              <p className="text-gray-300 text-sm mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
                 The blazer is a staple piece in office fashion...
               </p>
               <a 
                 href="/blog/blazer-guide" 
-                className="text-sm uppercase tracking-wider border-b border-black pb-1 inline-block hover:opacity-70 transition-opacity"
+                className="text-sm uppercase tracking-wider border-b border-white text-white pb-1 inline-block hover:opacity-70 transition-opacity"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
                 READ MORE
@@ -516,7 +542,7 @@ const Home = () => {
       </section>
 
       {/* Brand Logo Slider */}
-      <div className="w-full py-20 bg-white overflow-hidden border-t border-gray-100">
+      <div className="w-full py-20 bg-[#252525] overflow-hidden border-t border-gray-700">
         <div className="relative w-full">
           <motion.div 
             className="flex items-center"
@@ -539,11 +565,11 @@ const Home = () => {
             {[...Array(4)].map((_, groupIndex) => (
               <div key={groupIndex} className="flex items-center">
                 <div className="flex gap-32 items-center mx-16">
-                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity" style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: "3px" }}>lalupa</div>
-                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity" style={{ fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "1px" }}>nife</div>
-                  <div className="text-2xl font-light opacity-80 hover:opacity-100 transition-opacity tracking-[0.3em]">LF</div>
-                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity tracking-wider" style={{ fontFamily: "'Didot', serif" }}>FIGL</div>
-                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity" style={{ fontFamily: "'Alex Brush', cursive" }}>Lanty</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity text-white" style={{ fontFamily: "'Montserrat', sans-serif", letterSpacing: "3px" }}>lalupa</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity text-white" style={{ fontFamily: "'Helvetica Neue', sans-serif", letterSpacing: "1px" }}>nife</div>
+                  <div className="text-2xl font-light opacity-80 hover:opacity-100 transition-opacity tracking-[0.3em] text-white">LF</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity tracking-wider text-white" style={{ fontFamily: "'Didot', serif" }}>FIGL</div>
+                  <div className="text-2xl opacity-80 hover:opacity-100 transition-opacity text-white" style={{ fontFamily: "'Alex Brush', cursive" }}>Lanty</div>
                 </div>
               </div>
             ))}
@@ -556,7 +582,7 @@ const Home = () => {
         <div className="max-w-[1400px] mx-auto px-4">
           <div className="relative">
             <div className="flex items-center justify-center">
-              <div className="relative flex items-center gap-2">
+              <div className="relative flex items-center gap-0">
                 {[-2, -1, 0, 1, 2].map((offset) => {
                   const index = (activeIndex + offset + showcaseItems.length) % showcaseItems.length;
                   const item = showcaseItems[index];
@@ -569,19 +595,23 @@ const Home = () => {
                       initial={false}
                       animate={{
                         scale: 1,
-                        opacity: isCenter ? 1 : 0.9,
-                        x: offset * 290
+                        opacity: isCenter ? 1 : 0.8,
+                        x: offset * 150,
+                        rotate: offset === 0 ? 0 : offset > 0 ? -15 : 15,
+                        y: Math.abs(offset) * 10,
                       }}
                       transition={{
                         type: "spring",
                         stiffness: 300,
-                        damping: 30
+                        damping: 25,
+                        mass: 1.2,
                       }}
                       style={{
-                        transformOrigin: 'center center'
+                        transformOrigin: 'center center',
+                        zIndex: isCenter ? 2 : 1
                       }}
                     >
-                      <div className="relative w-full h-full overflow-hidden">
+                      <div className="relative w-full h-full overflow-hidden rounded-lg">
                         {isCenter && item.type === 'video' ? (
                           <VideoComponent src={item.videoSrc} poster={item.poster || item.image} isNext={false} />
                         ) : (
@@ -678,18 +708,28 @@ const Home = () => {
               DISCOVER NOW
             </motion.button>
           </div>
-          <img 
-            src="https://images.pexels.com/photos/6626903/pexels-photo-6626903.jpeg"
-            alt="Cosy Collection"
+          <video
             className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
             style={{
               filter: 'brightness(1.1) contrast(1.1)',
               objectPosition: 'center'
             }}
             onError={(e) => {
-              e.target.src = "https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg";
+              console.error("Video loading error:", e);
+              const fallbackImg = document.createElement('img');
+              fallbackImg.src = "https://images.pexels.com/photos/2681751/pexels-photo-2681751.jpeg";
+              fallbackImg.alt = "Cosy Collection";
+              fallbackImg.className = "absolute inset-0 w-full h-full object-cover";
+              e.target.parentNode.replaceChild(fallbackImg, e.target);
             }}
-          />
+          >
+            <source src="/videos/menny.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </motion.div>
 
         {/* Right Side - Video */}

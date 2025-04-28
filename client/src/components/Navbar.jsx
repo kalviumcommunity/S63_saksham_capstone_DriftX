@@ -14,7 +14,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <nav className="bg-[#2D2D2D] shadow-md sticky top-0 z-50 border-b border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left - Brand */}
@@ -23,7 +23,7 @@ const Navbar = () => {
             whileTap={{ scale: 0.95 }}
             className="flex-shrink-0"
           >
-            <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <Link to="/" className="text-2xl font-bold text-white hover:text-gray-200">
               DriftX
             </Link>
           </motion.div>
@@ -34,15 +34,15 @@ const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search products..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="w-full pl-10 pr-4 py-2 bg-[#3D3D3D] border border-gray-600 text-gray-200 placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-300"
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-gray-600 hover:text-gray-900 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <button
+            className="md:hidden text-gray-700 hover:text-gray-900 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
             onClick={toggleMenu}
           >
             {isMenuOpen ? <FaTimes className="h-6 w-6" /> : <FaBars className="h-6 w-6" />}
@@ -51,40 +51,40 @@ const Navbar = () => {
           {/* Right - Links & Cart */}
           <div className={`md:flex items-center space-x-8 ${
             isMenuOpen 
-              ? 'fixed top-16 left-0 right-0 bg-white shadow-lg flex flex-col space-y-4 p-4 transform translate-y-0 opacity-100 visible transition-all duration-300' 
+              ? 'fixed top-16 left-0 right-0 bg-[#2D2D2D] shadow-lg flex flex-col space-y-4 p-4 transform translate-y-0 opacity-100 visible transition-all duration-300' 
               : 'hidden md:flex'
           }`}>
             <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-              <Link to="/" className="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">
+              <Link to="/" className="text-gray-200 hover:text-white transition-colors duration-300 font-medium">
                 Home
               </Link>
             </motion.div>
             <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-              <Link to="/mens" className="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">
+              <Link to="/mens" className="text-gray-200 hover:text-white transition-colors duration-300 font-medium">
                 Men
               </Link>
             </motion.div>
             <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-              <Link to="/womens" className="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">
+              <Link to="/womens" className="text-gray-200 hover:text-white transition-colors duration-300 font-medium">
                 Women
               </Link>
             </motion.div>
             
             {userInfo ? (
               <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                <Link to="/profile" className="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">
+                <Link to="/profile" className="text-gray-200 hover:text-white transition-colors duration-300 font-medium">
                   Profile
                 </Link>
               </motion.div>
             ) : (
               <>
                 <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                  <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors duration-300 font-medium">
+                  <Link to="/login" className="text-gray-200 hover:text-white transition-colors duration-300 font-medium">
                     Login
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ y: -2 }} whileTap={{ y: 0 }}>
-                  <Link to="/register" className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors duration-300 font-medium">
+                  <Link to="/register" className="bg-gray-700 text-white px-4 py-2 rounded-full hover:bg-gray-600 transition-colors duration-300 font-medium">
                     Register
                   </Link>
                 </motion.div>
@@ -96,7 +96,7 @@ const Navbar = () => {
               whileTap={{ scale: 0.9 }}
               className="relative"
             >
-              <Link to="/cart" className="text-gray-600 hover:text-blue-600 transition-colors duration-300 text-xl">
+              <Link to="/cart" className="text-gray-200 hover:text-white transition-colors duration-300 text-xl">
                 <FaShoppingCart />
                 <AnimatePresence>
                   {cartItems.length > 0 && (
