@@ -58,11 +58,10 @@ export const updateProduct = async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    // Update fields
-    if (name) product.name = name;
+    if (name !== undefined) product.name = name;
     if (description !== undefined) product.description = description;
     if (price !== undefined) product.price = price;
-    if (images) product.images = images;
+    if (images !== undefined) product.images = images;
     if (category !== undefined) product.category = category;
     if (stock !== undefined) product.stock = stock;
     if (ratings !== undefined) product.ratings = ratings;
@@ -89,4 +88,9 @@ export const deleteProduct = async (req, res) => {
     console.error('Error deleting product:', err);
     res.status(500).json({ message: 'Error deleting product' });
   }
+};
+
+// Get all products (simple version — optional)
+export const getAllProducts = async (req, res) => {
+  res.status(200).json({ message: 'All Products Fetched' });
 };
