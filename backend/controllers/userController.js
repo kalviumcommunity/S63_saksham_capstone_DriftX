@@ -81,4 +81,56 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// (Update and Delete User remains same, no need to touch)
+// Update User
+export const updateUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.username = req.body.username || user.username;
+    user.email = req.body.email || user.email;
+    user.name = req.body.name || user.name;
+    user.phone = req.body.phone || user.phone;
+
+    if (req.file) {
+      user.profileImage = `/uploads/${req.file.filename}`;
+    }
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      user: {
+        id: updatedUser._id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        profileImage: updatedUser.profileImage,
+        role: updatedUser.role,
+      },
+    });
+  } catch (err) {
+    console.error('Update Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// Delete User
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    await user.deleteOne();
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Delete Error:', err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};

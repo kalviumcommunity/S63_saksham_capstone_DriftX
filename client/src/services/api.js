@@ -6,7 +6,19 @@ const API = axios.create({
 });
 
 // 🛒 Product APIs
-export const getAllProducts = () => API.get('/products');
+export const getAllProducts = async () => {
+  try {
+    const response = await API.get('/products');
+    if (response.status === 200) {
+      return response.data;
+    }
+    throw new Error('Failed to fetch products');
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
+};
+
 export const updateProduct = (id, productData) => API.put(`/products/${id}`, productData);
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
 

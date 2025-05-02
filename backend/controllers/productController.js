@@ -92,5 +92,11 @@ export const deleteProduct = async (req, res) => {
 
 // Get all products (simple version — optional)
 export const getAllProducts = async (req, res) => {
-  res.status(200).json({ message: 'All Products Fetched' });
+  try {
+    const products = await Product.find().populate('createdBy', 'name email');
+    res.status(200).json(products);
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ message: 'Error fetching products' });
+  }
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-import axios from "axios";
+import { getAllProducts } from "../services/api";
 import { 
   FiMenu, 
   FiX, 
@@ -38,13 +38,13 @@ const sortOptions = [
   { value: "popular", label: "Most Popular" }
 ];
 
-// Categories with proper icons
+// Categories with proper icons and paths
 const categories = [
-  { id: "all", name: "All Products", icon: FaTshirt },
-  { id: "shirts", name: "Shirts", icon: FaTshirt },
-  { id: "pants", name: "Pants", icon: GiTrousers },
-  { id: "shoes", name: "Shoes", icon: FaShoePrints },
-  { id: "accessories", name: "Accessories", icon: FaRedhat }
+  { id: "all", name: "All Products", icon: FaTshirt, path: "/mens" },
+  { id: "shirts", name: "Shirts", icon: FaTshirt, path: "/mens/shirts" },
+  { id: "pants", name: "Pants", icon: GiTrousers, path: "/mens/pants" },
+  { id: "shoes", name: "Shoes", icon: FaShoePrints, path: "/mens/shoes" },
+  { id: "accessories", name: "Accessories", icon: FaRedhat, path: "/mens/accessories" }
 ];
 
 // Add badge types and their styles
@@ -158,10 +158,7 @@ const Mens = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("/api/products");
-        const productList = Array.isArray(res.data)
-          ? res.data
-          : res.data.products;
+        const productList = await getAllProducts();
         
         // Filter products for men's category
         const mensProducts = productList.filter(
@@ -364,21 +361,26 @@ const Mens = () => {
               <h1 className="text-xl font-bold text-gray-900">Men's Collection</h1>
         </div>
             {/* Categories as horizontal row next to heading */}
-            <div className="flex flex-wrap gap-2 bg-white rounded-lg shadow p-2 ml-0 md:ml-8">
-              {categories.map((category) => {
-                const Icon = category.icon;
-                return (
-                  <button
-                    key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors text-base
-                      ${activeCategory === category.id ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100 text-gray-700'}`}
+            <div className="flex items-center space-x-4 overflow-x-auto pb-2 md:pb-0">
+              {categories.map((category) => (
+                <motion.div
+                  key={category.id}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link
+                    to={category.path}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
+                      selectedCategory === category.id
+                        ? 'bg-gray-700 text-white'
+                        : 'bg-[#2D2D2D] text-gray-300 hover:bg-gray-700'
+                    } transition-colors duration-300`}
                   >
-                    <Icon className={`text-xl ${activeCategory === category.id ? 'text-blue-700' : 'text-gray-500'}`} />
-                    {category.name}
-                  </button>
-                );
-              })}
+                    <category.icon className="text-lg" />
+                    <span>{category.name}</span>
+                  </Link>
+                </motion.div>
+              ))}
             </div>
           </div>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
@@ -438,11 +440,12 @@ const Mens = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 1, delay: 0.8 }}
           >
-                <button
-              className="px-10 py-3 border-2 border-[#FF3C00] text-[#FF3C00] text-lg font-semibold rounded-full bg-transparent hover:bg-[#FF3C00] hover:text-white transition-colors duration-300"
+                <Link
+                  to="/mens/shirts"
+                  className="px-10 py-3 border-2 border-[#FF3C00] text-[#FF3C00] text-lg font-semibold rounded-full bg-transparent hover:bg-[#FF3C00] hover:text-white transition-colors duration-300 inline-block"
                 >
-              SEE COLLECTION
-                </button>
+                  SEE COLLECTION
+                </Link>
           </motion.div>
         </motion.div>
 
@@ -495,11 +498,12 @@ const Mens = () => {
             </h2>
           </div>
           <div className="flex-1 w-full md:w-auto flex flex-col md:flex-row items-center justify-end gap-6">
-                      <button
-              className="px-10 py-3 border-2 border-[#FF3C00] text-[#FF3C00] text-lg font-semibold rounded-full bg-transparent hover:bg-[#FF3C00] hover:text-white transition-colors duration-300 mb-6 md:mb-0"
-            >
-              SEE COLLECTION
-                      </button>
+                      <Link
+                        to="/mens/shirts"
+                        className="px-10 py-3 border-2 border-[#FF3C00] text-[#FF3C00] text-lg font-semibold rounded-full bg-transparent hover:bg-[#FF3C00] hover:text-white transition-colors duration-300 mb-6 md:mb-0 inline-block"
+                      >
+                        SEE COLLECTION
+                      </Link>
             <motion.img
               src="/images/mens-collection.jpg"
               alt="Blue Banana Athletics Collection"
@@ -656,9 +660,9 @@ const Mens = () => {
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-white text-xl md:text-2xl font-semibold tracking-widest mb-4" style={{ letterSpacing: '0.15em' }}>SWEATSHIRTS</span>
-                <button className="mt-2 px-6 py-2 border border-white text-white font-semibold rounded transition-colors duration-200 hover:bg-white hover:text-black bg-opacity-70">
+                <Link to="/mens/shirts" className="mt-2 px-6 py-2 border border-white text-white font-semibold rounded transition-colors duration-200 hover:bg-white hover:text-black bg-opacity-70 inline-block">
                   SEE MORE
-                            </button>
+                </Link>
                           </div>
             </motion.div>
             {/* HOODIES */}
@@ -716,9 +720,9 @@ const Mens = () => {
             <h2 className="text-4xl md:text-6xl font-bold text-white tracking-widest text-center mb-6" style={{ lineHeight: 1.1 }}>
               ADVENTURE <span className="relative inline-block"><span className="bg-yellow-400 px-2 text-black">PASS</span></span>
             </h2>
-            <button className="mt-2 px-10 py-3 border-2 border-white text-white text-lg font-semibold rounded-full bg-transparent hover:bg-white hover:text-black transition-colors duration-300">
+            <Link to="/mens" className="mt-2 px-10 py-3 border-2 border-white text-white text-lg font-semibold rounded-full bg-transparent hover:bg-white hover:text-black transition-colors duration-300 inline-block">
               ÚNETE AL CLUB
-            </button>
+            </Link>
                         </div>
                       </div>
       </motion.section>
@@ -748,10 +752,10 @@ const Mens = () => {
             </div>
             {/* Top Right: Explore Button */}
             <div>
-              <button className="border border-white text-white px-8 py-4 rounded-lg font-semibold text-lg tracking-widest uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-2">
+              <Link to="/mens" className="border border-white text-white px-8 py-4 rounded-lg font-semibold text-lg tracking-widest uppercase hover:bg-white hover:text-black transition-colors flex items-center gap-2">
                 Explore the stores
                 <span className="ml-2">→</span>
-              </button>
+              </Link>
             </div>
           </div>
           <div className="flex flex-row justify-between items-end w-full mt-auto">
