@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -122,8 +123,8 @@ const Cart = () => {
       animate="visible"
     >
       <motion.div className="text-center mb-8" variants={itemVariants}>
-        <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-2">Your Shopping Cart</h1>
-        <p className="text-text-secondary">Review your items and proceed to checkout</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Your Shopping Cart</h1>
+        <p className="text-white">Review your items and proceed to checkout</p>
       </motion.div>
       
       {displayItems.length === 0 ? (
@@ -134,8 +135,8 @@ const Cart = () => {
           transition={{ duration: 0.5 }}
         >
           <FaShoppingCart className="text-6xl text-primary/50 mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold text-text-primary mb-2">Your cart is empty</h2>
-          <p className="text-text-secondary mb-6 max-w-md mx-auto">
+          <h2 className="text-2xl font-semibold text-black mb-2">Your cart is empty</h2>
+          <p className="text-black mb-6 max-w-md mx-auto">
             Looks like you haven't added any items to your cart yet.
             Browse our collection and find something you'll love!
           </p>
@@ -150,7 +151,7 @@ const Cart = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-8">
           <div className="space-y-6">
             <AnimatePresence>
-              {displayItems.map(item => (
+              {displayItems.map((item) => (
                 <motion.div 
                   key={item.id}
                   className="bg-white rounded-lg shadow-md p-4 flex flex-col sm:flex-row gap-4"
@@ -171,17 +172,17 @@ const Cart = () => {
                   <div className="flex-1 flex flex-col">
                     <Link 
                       to={`/product/${item.id}`} 
-                      className="text-lg font-semibold text-text-primary hover:text-primary transition-colors"
+                      className="text-lg font-semibold text-black hover:text-primary transition-colors"
                     >
                       {item.name}
                     </Link>
-                    <span className="text-text-secondary text-sm mb-2">{item.category}</span>
-                    <span className="text-lg font-medium text-text-primary">${item.price.toFixed(2)}</span>
+                    <span className="text-sm mb-2 text-black">{item.category}</span>
+                    <span className="text-lg font-medium text-black">${item.price.toFixed(2)}</span>
                     
                     <div className="mt-auto flex flex-wrap items-center gap-4">
                       <div className="flex items-center border border-border rounded-md">
                         <motion.button 
-                          className="w-8 h-8 flex items-center justify-center text-text-primary hover:bg-background-alt transition-colors"
+                          className="w-8 h-8 flex items-center justify-center text-black hover:bg-background-alt transition-colors"
                           onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -189,13 +190,13 @@ const Cart = () => {
                         </motion.button>
                         <input 
                           type="number" 
-                          className="w-12 h-8 text-center border-x border-border focus:outline-none" 
+                          className="w-12 h-8 text-center border-x border-border focus:outline-none text-black" 
                           value={item.quantity}
                           onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
                           min="1"
                         />
                         <motion.button 
-                          className="w-8 h-8 flex items-center justify-center text-text-primary hover:bg-background-alt transition-colors"
+                          className="w-8 h-8 flex items-center justify-center text-black hover:bg-background-alt transition-colors"
                           onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                           whileTap={{ scale: 0.95 }}
                         >
@@ -204,7 +205,7 @@ const Cart = () => {
                       </div>
                       
                       <motion.button 
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm text-error hover:bg-error/5 rounded-md transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm text-black hover:bg-error/5 rounded-md transition-colors"
                         onClick={() => handleRemoveItem(item.id)}
                         whileTap={{ scale: 0.95 }}
                       >
@@ -221,24 +222,24 @@ const Cart = () => {
             className="bg-white rounded-lg shadow-md p-6 h-fit sticky top-4"
             variants={itemVariants}
           >
-            <h2 className="text-xl font-semibold text-text-primary mb-6">Order Summary</h2>
+            <h2 className="text-xl font-semibold text-black mb-6">Order Summary</h2>
             
             <div className="space-y-4 mb-6">
               <div className="flex justify-between">
-                <span className="text-text-secondary">Subtotal</span>
-                <span className="text-text-primary font-medium">${subtotal.toFixed(2)}</span>
+                <span className="text-black">Subtotal</span>
+                <span className="text-black font-medium">${subtotal.toFixed(2)}</span>
               </div>
               
               <div className="flex justify-between">
-                <span className="text-text-secondary">Shipping</span>
-                <span className="text-text-primary font-medium">
+                <span className="text-black">Shipping</span>
+                <span className="text-black font-medium">
                   {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
                 </span>
               </div>
               
               <div className="flex justify-between">
-                <span className="text-text-secondary">Tax</span>
-                <span className="text-text-primary font-medium">${tax.toFixed(2)}</span>
+                <span className="text-black">Tax</span>
+                <span className="text-black font-medium">${tax.toFixed(2)}</span>
               </div>
               
               {discount > 0 && (
@@ -248,18 +249,18 @@ const Cart = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                 >
-                  <span className="text-text-secondary">Discount</span>
-                  <span className="text-success font-medium">-${discount.toFixed(2)}</span>
+                  <span className="text-black">Discount</span>
+                  <span className="text-black font-medium">-${discount.toFixed(2)}</span>
                 </motion.div>
               )}
               
               <div className="pt-4 border-t border-border">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-text-primary">Total</span>
-                  <span className="text-xl font-bold text-text-primary">${total.toFixed(2)}</span>
+                  <span className="text-lg font-semibold text-black">Total</span>
+                  <span className="text-xl font-bold text-black">${total.toFixed(2)}</span>
                 </div>
                 {shipping === 0 && (
-                  <p className="text-sm text-success mt-2">
+                  <p className="text-sm text-black mt-2">
                     You've qualified for free shipping!
                   </p>
                 )}
@@ -273,7 +274,7 @@ const Cart = () => {
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                   placeholder="Enter promo code"
-                  className="flex-1 px-4 py-2 border border-border rounded-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="flex-1 px-4 py-2 border border-border rounded-md focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-black"
                 />
                 <motion.button
                   type="submit"
@@ -285,17 +286,19 @@ const Cart = () => {
               </div>
             </form>
             
-            <motion.button
-              className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-md hover:-translate-y-1 hover:shadow-lg transition-all"
-              whileHover={{ y: -4 }}
-              whileTap={{ y: 0 }}
-            >
-              Proceed to Checkout
-            </motion.button>
+            <Link to="/checkout">
+              <motion.button
+                className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-md hover:-translate-y-1 hover:shadow-lg transition-all"
+                whileHover={{ y: -4 }}
+                whileTap={{ y: 0 }}
+              >
+                Proceed to Checkout
+              </motion.button>
+            </Link>
             
             <Link 
               to="/" 
-              className="flex items-center justify-center gap-2 mt-4 text-text-secondary hover:text-primary transition-colors"
+              className="flex items-center justify-center gap-2 mt-4 text-black hover:text-primary transition-colors"
             >
               <FaArrowLeft />
               Continue Shopping

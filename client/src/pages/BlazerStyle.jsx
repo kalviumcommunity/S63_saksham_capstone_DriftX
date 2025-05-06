@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import { useEffect, useState, useRef } from 'react';
 
@@ -507,7 +508,7 @@ const BlazerStyle = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="text-3xl font-semibold mb-8 text-white text-center"
+              className="text-3xl font-semibold mb-8 text-black text-center"
             >
               Style Guide
               <motion.div
@@ -557,7 +558,7 @@ const BlazerStyle = () => {
                     {style.icon}
                   </motion.div>
 
-                  <h4 className="text-xl font-semibold text-white mb-2">{style.title}</h4>
+                  <h4 className="text-xl font-semibold text-black mb-2">{style.title}</h4>
                   <p className="text-gray-200 mb-4">{style.description}</p>
 
                   <AnimatePresence>
@@ -646,7 +647,7 @@ const BlazerStyle = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="mt-12"
             >
-              <h4 className="text-xl font-semibold text-white mb-6 text-center">Quick Style Tips</h4>
+              <h4 className="text-xl font-semibold text-black mb-6 text-center">Quick Style Tips</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { text: "Always check the fit", icon: "📏" },
@@ -689,7 +690,7 @@ const BlazerStyle = () => {
               transition={{ duration: 0.5, delay: 0.6 }}
               className="mt-12 p-6 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10"
             >
-              <h4 className="text-xl font-semibold text-white mb-4 text-center">Style Quiz</h4>
+              <h4 className="text-xl font-semibold text-black mb-4 text-center">Style Quiz</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   "What's your preferred style?",
@@ -736,7 +737,7 @@ const BlazerStyle = () => {
             <motion.h2
               initial={{ y: -20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              className="text-4xl font-bold text-white text-center mb-12"
+              className="text-4xl font-bold text-black text-center mb-12"
             >
               Color Harmony Guide
             </motion.h2>
@@ -749,7 +750,7 @@ const BlazerStyle = () => {
                   transition={{ delay: index * 0.2 }}
                   className="bg-black/30 backdrop-blur-lg rounded-xl p-6 border border-white/10"
                 >
-                  <h3 className="text-xl font-semibold text-white mb-4">{palette.name}</h3>
+                  <h3 className="text-xl font-semibold text-black mb-4">{palette.name}</h3>
                   <div className="flex gap-2 mb-4">
                     {palette.colors.map((color) => (
                       <motion.div
@@ -761,7 +762,7 @@ const BlazerStyle = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-gray-300">{palette.description}</p>
+                  <p className="text-gray-200">{palette.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -774,7 +775,7 @@ const BlazerStyle = () => {
             <motion.h2
               initial={{ y: -20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              className="text-4xl font-bold text-white text-center mb-12"
+              className="text-4xl font-bold text-black text-center mb-12"
             >
               3D Blazer Showcase
             </motion.h2>
@@ -815,7 +816,7 @@ const BlazerStyle = () => {
             <motion.h2
               initial={{ y: -20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              className="text-4xl font-bold text-white text-center mb-12"
+              className="text-4xl font-bold text-black text-center mb-12"
             >
               Seasonal Trends
             </motion.h2>
@@ -838,8 +839,8 @@ const BlazerStyle = () => {
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                   >
-                    <h3 className="text-2xl font-bold text-white mb-2 capitalize">{season}</h3>
-                    <p className="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <h3 className="text-2xl font-bold text-black mb-2 capitalize">{season}</h3>
+                    <p className="text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       Discover the latest {season.toLowerCase()} blazer trends
                     </p>
                   </motion.div>
@@ -855,7 +856,7 @@ const BlazerStyle = () => {
             <motion.h2
               initial={{ y: -20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              className="text-4xl font-bold text-white text-center mb-12"
+              className="text-4xl font-bold text-black text-center mb-12"
             >
               Perfect Fit Guide
             </motion.h2>
@@ -865,7 +866,7 @@ const BlazerStyle = () => {
                 whileInView={{ x: 0, opacity: 1 }}
                 className="bg-black/30 backdrop-blur-lg rounded-xl p-8 border border-white/10"
               >
-                <h3 className="text-2xl font-semibold text-white mb-6">Key Measurements</h3>
+                <h3 className="text-2xl font-semibold text-black mb-6">Key Measurements</h3>
                 {[
                   { label: "Shoulder Width", value: "16-18 inches" },
                   { label: "Chest", value: "38-42 inches" },
@@ -879,8 +880,8 @@ const BlazerStyle = () => {
                     transition={{ delay: index * 0.1 }}
                     className="flex justify-between items-center mb-4 p-4 bg-white/5 rounded-lg"
                   >
-                    <span className="text-gray-300">{measurement.label}</span>
-                    <span className="text-white font-semibold">{measurement.value}</span>
+                    <span className="text-gray-200">{measurement.label}</span>
+                    <span className="text-black font-semibold">{measurement.value}</span>
                   </motion.div>
                 ))}
               </motion.div>
@@ -910,7 +911,7 @@ const BlazerStyle = () => {
             <motion.h2
               initial={{ y: -20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              className="text-4xl font-bold text-white text-center mb-12"
+              className="text-4xl font-bold text-black text-center mb-12"
             >
               Style Inspiration Gallery
             </motion.h2>
@@ -951,7 +952,7 @@ const BlazerStyle = () => {
             <motion.h2
               initial={{ y: -20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              className="text-4xl font-bold text-white text-center mb-12"
+              className="text-4xl font-bold text-black text-center mb-12"
             >
               Luxury Lookbook
             </motion.h2>
@@ -968,8 +969,8 @@ const BlazerStyle = () => {
                     className="w-full h-[600px] object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 flex flex-col justify-end">
-                    <h3 className="text-2xl font-bold text-white">Professional Excellence</h3>
-                    <p className="text-gray-300">Perfect for business meetings and formal occasions</p>
+                    <h3 className="text-2xl font-bold text-black">Professional Excellence</h3>
+                    <p className="text-gray-200">Perfect for business meetings and formal occasions</p>
                   </div>
                 </div>
                 <div className="relative group overflow-hidden rounded-xl">
@@ -979,8 +980,8 @@ const BlazerStyle = () => {
                     className="w-full h-[400px] object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 flex flex-col justify-end">
-                    <h3 className="text-2xl font-bold text-white">Casual Sophistication</h3>
-                    <p className="text-gray-300">Effortless style for everyday elegance</p>
+                    <h3 className="text-2xl font-bold text-black">Casual Sophistication</h3>
+                    <p className="text-gray-200">Effortless style for everyday elegance</p>
                   </div>
                 </div>
               </motion.div>
@@ -996,8 +997,8 @@ const BlazerStyle = () => {
                     className="w-full h-[400px] object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 flex flex-col justify-end">
-                    <h3 className="text-2xl font-bold text-white">Evening Charm</h3>
-                    <p className="text-gray-300">Make a statement at special events</p>
+                    <h3 className="text-2xl font-bold text-black">Evening Charm</h3>
+                    <p className="text-gray-200">Make a statement at special events</p>
                   </div>
                 </div>
                 <div className="relative group overflow-hidden rounded-xl">
@@ -1007,8 +1008,8 @@ const BlazerStyle = () => {
                     className="w-full h-[600px] object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8 flex flex-col justify-end">
-                    <h3 className="text-2xl font-bold text-white">Modern Edge</h3>
-                    <p className="text-gray-300">Contemporary style for the fashion-forward</p>
+                    <h3 className="text-2xl font-bold text-black">Modern Edge</h3>
+                    <p className="text-gray-200">Contemporary style for the fashion-forward</p>
                   </div>
                 </div>
               </motion.div>

@@ -5,14 +5,38 @@ const API = axios.create({
   baseURL: 'http://localhost:5000/api',
 });
 
+// Add request interceptor for authentication
+API.interceptors.request.use(
+  (config) => {
+    const userInfo = localStorage.getItem('userInfo');
+    if (userInfo) {
+      const { token } = JSON.parse(userInfo);
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for error handling
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('userInfo');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 // 🛒 Product APIs
 export const getAllProducts = async () => {
   try {
     const response = await API.get('/products');
-    if (response.status === 200) {
-      return response.data;
-    }
-    throw new Error('Failed to fetch products');
+    return response.data;
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;
@@ -23,29 +47,66 @@ export const updateProduct = (id, productData) => API.put(`/products/${id}`, pro
 export const deleteProduct = (id) => API.delete(`/products/${id}`);
 
 // 👤 User APIs
-export const loginUser = (data) => API.post('/users/login', data);
+export const loginUser = async (data) => {
+  try {
+    const response = await API.post('/users/login', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
+};
 
 export const updateUser = async (userData) => {
-  const config = {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${localStorage.getItem('userInfo')?.token}`,
-    },
-  };
-
-  const response = await axios.put('/api/users/profile', userData, config);
-  return response.data;
+  try {
+    const response = await API.put('/users/profile', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
 };
 
 export const deleteUser = async () => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('userInfo')?.token}`,
-    },
-  };
+  try {
+    const response = await API.delete('/users/profile');
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+};
 
-  const response = await axios.delete('/api/users/profile', config);
-  return response.data;
+// ===== DummyJSON Product APIs =====
+export const getAllProductsDummy = async () => {
+  try {
+    const response = await axios.get('https://dummyjson.com/products');
+    return response.data.products;
+  } catch (error) {
+    console.error('Error fetching DummyJSON products:', error);
+    throw error;
+  }
+};
+
+export const getProductsByCategoryDummy = async (category) => {
+  try {
+    const response = await axios.get(`https://dummyjson.com/products/category/${category}`);
+    return response.data.products;
+  } catch (error) {
+    console.error('Error fetching DummyJSON category:', error);
+    throw error;
+  }
+};
+
+export const searchProductsDummy = async (query) => {
+  try {
+    const response = await axios.get(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}`);
+    return response.data.products;
+  } catch (error) {
+    console.error('Error searching DummyJSON products:', error);
+    throw error;
+  }
 };
 
 export default API;
+

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -120,8 +121,7 @@ const Register = () => {
         setUploading(true);
         
         const data = new FormData();
-        data.append('firstName', formData.firstName);
-        data.append('lastName', formData.lastName);
+        data.append('name', formData.firstName + ' ' + formData.lastName);
         data.append('username', formData.username);
         data.append('email', formData.email);
         data.append('password', formData.password);
@@ -130,15 +130,19 @@ const Register = () => {
           data.append('avatar', image);
         }
         
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // In a real app, you would make an actual API call:
-        // const res = await fetch('http://localhost:5000/api/users/register', {
-        //   method: 'POST',
-        //   body: data,
-        // });
-        // const result = await res.json();
+        const res = await fetch('http://localhost:5000/api/users/register', {
+          method: 'POST',
+          body: data,
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          setUploading(false);
+          setFormErrors({
+            ...formErrors,
+            submit: result.message || 'Registration failed. Please try again.'
+          });
+          return;
+        }
         
         setUploading(false);
         setSubmitSuccess(true);

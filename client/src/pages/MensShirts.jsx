@@ -345,7 +345,7 @@ const MensShirts = () => {
 
     return (
       <div className="mb-6 border-b pb-4">
-        <h3 className="font-semibold mb-2 text-sm">{title}</h3>
+        <h3 className="font-semibold mb-2 text-sm text-black">{title}</h3>
         <div className="space-y-2">
           {displayItems.map((item, index) => (
             <label key={index} className="flex items-center space-x-2 cursor-pointer text-sm">
@@ -361,10 +361,10 @@ const MensShirts = () => {
                     className="w-4 h-4 rounded-full border"
                     style={{ backgroundColor: item.code }}
                   />
-                  <span>{item.name}</span>
+                  <span className="text-black">{item.name}</span>
                 </div>
               ) : (
-                <span>{item}</span>
+                <span className="text-black">{item}</span>
               )}
             </label>
           ))}
@@ -372,7 +372,7 @@ const MensShirts = () => {
         {isExpandable && items.length > 5 && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-blue-600 hover:text-blue-800 text-sm mt-2"
+            className="text-black hover:text-blue-800 text-sm mt-2"
           >
             {isExpanded ? 'See Less' : `See ${items.length - 5} more`}
           </button>
@@ -476,7 +476,7 @@ const MensShirts = () => {
 
               {/* Price Range */}
               <div className="mb-6 border-b pb-4">
-                <h3 className="font-semibold mb-2 text-sm">Price</h3>
+                <h3 className="font-semibold mb-2 text-sm text-black">Price</h3>
                 <div className="flex items-center space-x-2 text-sm">
                   <span>₹</span>
                   <input

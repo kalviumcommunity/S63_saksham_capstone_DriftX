@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
 import Mens from './pages/Mens';
 import MensShirts from './pages/MensShirts';
 import MensPants from './pages/MensPants';
@@ -150,6 +152,16 @@ const AppContent = () => {
           <Route path="/cart" element={
             <PageTransition>
               <Cart />
+            </PageTransition>
+          } />
+          <Route path="/checkout" element={
+            <PageTransition>
+              <Checkout />
+            </PageTransition>
+          } />
+          <Route path="/order-confirmation" element={
+            <PageTransition>
+              <OrderConfirmation />
             </PageTransition>
           } />
           <Route path="/product/:id" element={

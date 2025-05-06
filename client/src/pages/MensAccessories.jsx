@@ -2,7 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaStar, FaStarHalf, FaAmazon, FaChevronDown } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { getAllProducts } from '../services/api';
+import { getAllProducts, getProductsByCategoryDummy, searchProductsDummy } from '../services/api';
+
+const DummyJsonApiTest = () => {
+  const [mensShirts, setMensShirts] = useState([]);
+  const [womensDresses, setWomensDresses] = useState([]);
+  const [searchShirt, setSearchShirt] = useState([]);
+
+  useEffect(() => {
+    getProductsByCategoryDummy('mens-shirts').then(products => {
+      setMensShirts(products);
+      console.log("Men's Shirts:", products);
+    });
+    getProductsByCategoryDummy('womens-dresses').then(products => {
+      setWomensDresses(products);
+      console.log("Women's Dresses:", products);
+    });
+    searchProductsDummy('shirt').then(products => {
+      setSearchShirt(products);
+      console.log('Search Results for "shirt":', products);
+    });
+  }, []);
+
+  return (
+    <div style={{ background: '#fffbe6', padding: 16, marginBottom: 16, borderRadius: 8, border: '1px solid #ffe58f', color: '#222' }}>
+      <strong style={{ fontSize: 20, display: 'block', marginBottom: 4 }}>DummyJSON API Test:</strong>
+      <div style={{ fontWeight: 400 }}>Men's Shirts: {mensShirts.length} {mensShirts[0] && `- ${mensShirts[0].title}`}</div>
+      <div style={{ fontWeight: 400 }}>Women's Dresses: {womensDresses.length} {womensDresses[0] && `- ${womensDresses[0].title}`}</div>
+      <div style={{ fontWeight: 400 }}>Search "shirt": {searchShirt.length} {searchShirt[0] && `- ${searchShirt[0].title}`}</div>
+    </div>
+  );
+};
 
 const MensAccessories = () => {
   const [products, setProducts] = useState([]);
@@ -344,6 +374,8 @@ const MensAccessories = () => {
   // Filter Section Component
   const FilterSection = ({ title, items, type, isColor = false, isExpandable = true }) => {
     const [isExpanded, setIsExpanded] = useState(!isExpandable);
+    // Fallback for undefined filter keys
+    const filterValues = filters[type] || [];
 
     return (
       <div className="border-b pb-4">
@@ -351,7 +383,7 @@ const MensAccessories = () => {
           className="flex justify-between items-center cursor-pointer py-2"
           onClick={() => isExpandable && setIsExpanded(!isExpanded)}
         >
-          <h3 className="font-medium text-sm">{title}</h3>
+          <h3 className="font-medium text-sm text-black">{title}</h3>
           {isExpandable && (
             <FaChevronDown className={`transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           )}
@@ -365,8 +397,10 @@ const MensAccessories = () => {
                   <button
                     key={color.name}
                     onClick={() => handleFilterChange(type, color.name)}
-                    className={`w-6 h-6 rounded-full border-2 ${
-                      filters[type].includes(color.name) ? 'border-blue-500' : 'border-gray-200'
+                    className={`w-6 h-6 rounded-full border-2 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                      filterValues.includes(color.name)
+                        ? 'border-black ring-2 ring-black'
+                        : 'border-gray-300 hover:border-black'
                     }`}
                     style={{
                       background: color.code,
@@ -381,11 +415,11 @@ const MensAccessories = () => {
                   <label key={item} className="flex items-center space-x-2">
                     <input
                       type="checkbox"
-                      checked={filters[type].includes(item)}
+                      checked={filterValues.includes(item)}
                       onChange={() => handleFilterChange(type, item)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="rounded border-gray-300 text-black focus:ring-black"
                     />
-                    <span className="text-sm text-gray-600">{item}</span>
+                    <span className="text-sm text-black">{item}</span>
                   </label>
                 ))}
               </div>
@@ -398,6 +432,7 @@ const MensAccessories = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      <DummyJsonApiTest />
       <div className="max-w-[1480px] mx-auto px-4 py-4">
         {/* Results Header */}
         <div className="flex justify-between items-center mb-4 border-b pb-2">
@@ -466,43 +501,53 @@ const MensAccessories = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {products.map((product) => (
-                  <Link to={`/product/${product._id}`} key={product._id} className="block">
-                    <div className="border rounded p-4 hover:shadow transition-shadow bg-white">
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        className="w-full h-60 object-cover mb-4"
-                      />
-                      <div className="space-y-2">
-                        <h3 className="font-medium text-sm line-clamp-2">{product.name}</h3>
-                        <div className="flex items-center">
-                          <div className="flex items-center text-sm">
-                            {renderStarRating(product.rating)}
-                            <span className="ml-1 text-blue-500">({product.reviews.length})</span>
+                {(Array.isArray(products) ? products : []).map((product, idx) => {
+                  // Defensive checks for required fields
+                  if (!product || !product._id || !product.name || !product.images || !Array.isArray(product.images) || !product.images[0]) {
+                    return (
+                      <div key={product?._id || idx} className="border rounded p-4 bg-gray-100 text-gray-500 flex items-center justify-center min-h-[200px]">
+                        Product data unavailable
+                      </div>
+                    );
+                  }
+                  return (
+                    <Link to={`/product/${product._id}`} key={product._id} className="block">
+                      <div className="border rounded p-4 hover:shadow transition-shadow bg-white">
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-60 object-cover mb-4"
+                        />
+                        <div className="space-y-2">
+                          <h3 className="font-medium text-sm line-clamp-2">{product.name}</h3>
+                          <div className="flex items-center">
+                            <div className="flex items-center text-sm">
+                              {renderStarRating(product.rating || 0)}
+                              <span className="ml-1 text-black">({Array.isArray(product.reviews) ? product.reviews.length : 0})</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className="text-lg font-bold">₹{product.price}</span>
-                          {product.mrp && (
-                            <>
-                              <span className="text-sm text-gray-500 line-through">₹{product.mrp}</span>
-                              <span className="text-sm text-green-600">
-                                ({calculateDiscount(product.price, product.mrp)}% off)
-                              </span>
-                            </>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg font-bold">₹{product.price || '--'}</span>
+                            {product.mrp && (
+                              <>
+                                <span className="text-sm text-gray-500 line-through">₹{product.mrp}</span>
+                                <span className="text-sm text-green-600">
+                                  ({calculateDiscount(product.price, product.mrp)}% off)
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          {product.prime && (
+                            <div className="flex items-center space-x-1">
+                              <FaAmazon className="text-blue-500" />
+                              <span className="text-xs text-black">prime</span>
+                            </div>
                           )}
                         </div>
-                        {product.prime && (
-                          <div className="flex items-center space-x-1">
-                            <FaAmazon className="text-blue-500" />
-                            <span className="text-xs text-blue-500">prime</span>
-                          </div>
-                        )}
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>

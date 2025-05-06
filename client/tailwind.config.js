@@ -7,11 +7,39 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#6366f1',
-        'primary-dark': '#4f46e5',
-        'primary-light': '#818cf8',
-        secondary: '#8b5cf6',
-        accent: '#ec4899',
+        primary: {
+          DEFAULT: '#6366F1',
+          dark: '#4F46E5',
+          light: '#818CF8',
+          100: '#E0E7FF',
+        },
+        error: {
+          DEFAULT: '#EF4444',
+          dark: '#DC2626',
+        },
+        border: '#E5E7EB',
+        background: {
+          alt: '#F9FAFB',
+        },
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.5s ease-in-out',
+        'slide-down': 'slideDown 0.5s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
       fontFamily: {
         sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', 'sans-serif'],

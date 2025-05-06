@@ -184,7 +184,7 @@ const MensPants = () => {
           className="flex justify-between items-center cursor-pointer mb-2"
           onClick={() => isExpandable && setIsExpanded(!isExpanded)}
         >
-          <h3 className="font-medium text-sm">{title}</h3>
+          <h3 className="font-medium text-sm text-black">{title}</h3>
           {isExpandable && (
             <FaChevronDown className={`transform transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           )}
@@ -200,7 +200,7 @@ const MensPants = () => {
                   onChange={() => handleFilterChange(type, isColor ? item.name : item)}
                   className="mr-2"
                 />
-                <label htmlFor={`${type}-${index}`} className="text-sm flex items-center">
+                <label htmlFor={`${type}-${index}`} className="text-sm text-black flex items-center">
                   {isColor && (
                     <span 
                       className="w-4 h-4 rounded-full inline-block mr-2" 
@@ -259,7 +259,7 @@ const MensPants = () => {
           <div className="flex-1">
             {/* Results Header */}
             <div className="bg-white p-4 mb-4 flex justify-between items-center">
-              <div className="text-sm text-[#565959]">
+              <div className="text-sm text-black">
                 <span>1-{products.length} of over 50,000 results for</span>
                 <span className="ml-2 font-bold text-[#C45500]">"mens pants"</span>
               </div>
@@ -320,7 +320,7 @@ const MensPants = () => {
                         )}
                       </div>
                       
-                      <h3 className="text-sm text-[#0F1111] hover:text-[#C45500] line-clamp-2 min-h-[40px]">
+                      <h3 className="text-sm text-black hover:text-[#C45500] line-clamp-2 min-h-[40px]">
                         {product.name}
                       </h3>
                       
@@ -328,7 +328,7 @@ const MensPants = () => {
                         <div className="flex items-center">
                           {renderStarRating(product.rating)}
                         </div>
-                        <span className="text-sm text-[#007185] hover:text-[#C45500]">
+                        <span className="text-sm text-black hover:text-[#C45500]">
                           {product.reviews.toLocaleString()}
                         </span>
                       </div>
@@ -337,8 +337,8 @@ const MensPants = () => {
                         <span className="text-xs align-top">₹</span>
                         <span className="text-xl font-medium">{product.price}</span>
                         <div className="flex items-center gap-1 text-sm">
-                          <span className="text-[#565959]">M.R.P.:</span>
-                          <span className="text-[#565959] line-through">₹{product.mrp}</span>
+                          <span className="text-black">M.R.P.:</span>
+                          <span className="text-black line-through">₹{product.mrp}</span>
                           <span className="text-[#CC0C39]">({product.discount}% off)</span>
                         </div>
                       </div>
@@ -350,7 +350,7 @@ const MensPants = () => {
                             alt="Prime"
                             className="h-[18px]"
                           />
-                          <span className="text-sm text-[#565959]">{product.deliveryDate}</span>
+                          <span className="text-sm text-black">{product.deliveryDate}</span>
                         </div>
                       )}
                     </Link>

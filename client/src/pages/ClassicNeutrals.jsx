@@ -12,7 +12,7 @@ const ClassicNeutrals = () => {
       video: "/videos/lady1.mp4",
       buttonText: "SHOP NOW",
       link: "/collection/luxury",
-      textColor: "text-gray-900",
+      textColor: "text-black",
       buttonStyle: "bg-black text-white hover:bg-gray-900",
       animation: { initial: { x: -100, opacity: 0 }, animate: { x: 0, opacity: 1 } }
     },
@@ -24,7 +24,7 @@ const ClassicNeutrals = () => {
       video: "/videos/lady3.mp4",
       buttonText: "EXPLORE NOW",
       link: "/collection/timeless",
-      textColor: "text-gray-900",
+      textColor: "text-black",
       buttonStyle: "bg-black text-white hover:bg-gray-900",
       animation: { initial: { x: 100, opacity: 0 }, animate: { x: 0, opacity: 1 } }
     },
@@ -36,7 +36,7 @@ const ClassicNeutrals = () => {
       video: "/videos/lady2.mp4",
       buttonText: "DISCOVER MORE",
       link: "/collection/minimal",
-      textColor: "text-gray-900",
+      textColor: "text-black",
       buttonStyle: "bg-black text-white hover:bg-gray-900",
       animation: { initial: { x: -100, opacity: 0 }, animate: { x: 0, opacity: 1 } }
     }

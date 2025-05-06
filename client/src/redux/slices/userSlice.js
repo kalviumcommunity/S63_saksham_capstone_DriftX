@@ -8,7 +8,7 @@ export const loginUser = createAsyncThunk('user/login', async ({ email, password
     localStorage.setItem('userInfo', JSON.stringify(data)); // Save token & user
     return data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
   }
 });
 
@@ -19,7 +19,7 @@ export const updateUser = createAsyncThunk('user/update', async (userData, thunk
     localStorage.setItem('userInfo', JSON.stringify(data));
     return data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Update failed');
   }
 });
 
@@ -30,7 +30,7 @@ export const deleteUser = createAsyncThunk('user/delete', async (_, thunkAPI) =>
     localStorage.removeItem('userInfo');
     return null;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response.data.message);
+    return thunkAPI.rejectWithValue(error.response?.data?.message || 'Delete failed');
   }
 });
 
@@ -45,6 +45,9 @@ const userSlice = createSlice({
     logout: (state) => {
       state.userInfo = null;
       localStorage.removeItem('userInfo');
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -88,5 +91,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout, clearError } = userSlice.actions;
 export default userSlice.reducer;

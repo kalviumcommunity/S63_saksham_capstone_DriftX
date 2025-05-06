@@ -276,9 +276,9 @@ const Home = () => {
             <div className="absolute inset-0 bg-black/40" />
 
             {/* Hero Content */}
-            <div className="relative z-10 text-center text-white px-4">
+            <div className="relative z-10 text-center text-black px-4">
               <motion.h1
-                className="text-6xl md:text-8xl font-bold mb-4"
+                className="text-6xl md:text-8xl font-bold mb-4 text-white"
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8 }}
@@ -286,7 +286,7 @@ const Home = () => {
                 DRIFTX
               </motion.h1>
               <motion.p
-                className="text-xl md:text-2xl mb-8"
+                className="text-xl md:text-2xl mb-8 text-white"
                 initial={{ y: -30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}

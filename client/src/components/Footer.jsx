@@ -25,41 +25,41 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
         {/* Products */}
         <div>
-          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">Products</h4>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase text-black">Products</h4>
           <ul className="space-y-2">
-            <li><Link to="/dress" className="text-sm text-gray-600 hover:text-black transition-colors">Dress</Link></li>
-            <li><Link to="/blazer" className="text-sm text-gray-600 hover:text-black transition-colors">Blazer</Link></li>
-            <li><Link to="/skirt" className="text-sm text-gray-600 hover:text-black transition-colors">Skirt</Link></li>
-            <li><Link to="/trousers" className="text-sm text-gray-600 hover:text-black transition-colors">Trousers</Link></li>
-            <li><Link to="/jumpsuits" className="text-sm text-gray-600 hover:text-black transition-colors">Jumpsuits</Link></li>
+            <li><Link to="/dress" className="text-sm text-neutral-800 hover:text-black transition-colors">Dress</Link></li>
+            <li><Link to="/blazer" className="text-sm text-neutral-800 hover:text-black transition-colors">Blazer</Link></li>
+            <li><Link to="/skirt" className="text-sm text-neutral-800 hover:text-black transition-colors">Skirt</Link></li>
+            <li><Link to="/trousers" className="text-sm text-neutral-800 hover:text-black transition-colors">Trousers</Link></li>
+            <li><Link to="/jumpsuits" className="text-sm text-neutral-800 hover:text-black transition-colors">Jumpsuits</Link></li>
           </ul>
         </div>
 
         {/* Service */}
         <div>
-          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">Service</h4>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase text-black">Service</h4>
           <ul className="space-y-2">
-            <li><Link to="/faq" className="text-sm text-gray-600 hover:text-black transition-colors">FAQ</Link></li>
-            <li><Link to="/shipping" className="text-sm text-gray-600 hover:text-black transition-colors">Shipping</Link></li>
-            <li><Link to="/contact" className="text-sm text-gray-600 hover:text-black transition-colors">Contact</Link></li>
+            <li><Link to="/faq" className="text-sm text-neutral-800 hover:text-black transition-colors">FAQ</Link></li>
+            <li><Link to="/shipping" className="text-sm text-neutral-800 hover:text-black transition-colors">Shipping</Link></li>
+            <li><Link to="/contact" className="text-sm text-neutral-800 hover:text-black transition-colors">Contact</Link></li>
           </ul>
         </div>
 
         {/* Information */}
         <div>
-          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">Information</h4>
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase text-black">Information</h4>
           <ul className="space-y-2">
-            <li><Link to="/about" className="text-sm text-gray-600 hover:text-black transition-colors">About Us</Link></li>
-            <li><Link to="/returns" className="text-sm text-gray-600 hover:text-black transition-colors">Return and Refunds</Link></li>
-            <li><Link to="/legal" className="text-sm text-gray-600 hover:text-black transition-colors">Legal Area</Link></li>
+            <li><Link to="/about" className="text-sm text-neutral-800 hover:text-black transition-colors">About Us</Link></li>
+            <li><Link to="/returns" className="text-sm text-neutral-800 hover:text-black transition-colors">Return and Refunds</Link></li>
+            <li><Link to="/legal" className="text-sm text-neutral-800 hover:text-black transition-colors">Legal Area</Link></li>
           </ul>
         </div>
 
         {/* About Us */}
         <div>
-          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase">About Us</h4>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            We could not have created this store without the help of an amazing source of content and products. Visit our <Link to="/store" className="underline hover:text-black transition-colors">store page</Link> to find out where all the products used in this demo came from.
+          <h4 className="text-sm font-medium mb-4 tracking-wide uppercase text-black">About Us</h4>
+          <p className="text-sm text-neutral-800 leading-relaxed">
+            We could not have created this store without the help of an amazing source of content and products. Visit our <Link to="/store" className="underline hover:text-black transition-colors text-neutral-800">store page</Link> to find out where all the products used in this demo came from.
           </p>
         </div>
       </div>
@@ -85,11 +85,13 @@ const Footer = () => {
       {/* Brand Name */}
       <div className="text-center">
         <h1 
-          className="text-[180px] md:text-[200px] leading-none font-light tracking-tight"
+          className="text-[180px] md:text-[200px] leading-none font-light tracking-tight text-black"
           style={{
             fontFamily: "'Didot', 'Bodoni MT', 'Noto Serif Display', serif",
             fontWeight: 300,
-            letterSpacing: "-0.02em"
+            letterSpacing: "-0.02em",
+            color: '#111',
+            textShadow: '0 2px 8px rgba(0,0,0,0.08), 0 1px 0 #fff',
           }}
         >
           DRIFTX

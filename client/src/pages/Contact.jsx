@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaPaperPlane } from 'react-icons/fa';
@@ -131,10 +132,10 @@ const Contact = () => {
                 <FaMapMarkerAlt className="text-lg" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-text-primary">Our Location</h3>
-                <p className="text-text-secondary">123 Fashion Street</p>
-                <p className="text-text-secondary">New York, NY 10001</p>
-                <p className="text-text-secondary">United States</p>
+                <h3 className="text-lg font-semibold mb-2 text-[#222]">Our Location</h3>
+                <p className="text-[#333]">123 Fashion Street</p>
+                <p className="text-[#333]">New York, NY 10001</p>
+                <p className="text-[#333]">United States</p>
               </div>
             </motion.div>
             
@@ -146,9 +147,9 @@ const Contact = () => {
                 <FaPhone className="text-lg" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-text-primary">Phone</h3>
-                <p className="text-text-secondary">+1 (555) 123-4567</p>
-                <p className="text-text-secondary">+1 (555) 765-4321</p>
+                <h3 className="text-lg font-semibold mb-2 text-[#222]">Phone</h3>
+                <p className="text-[#333]">+1 (555) 123-4567</p>
+                <p className="text-[#333]">+1 (555) 765-4321</p>
               </div>
             </motion.div>
             
@@ -160,9 +161,9 @@ const Contact = () => {
                 <FaEnvelope className="text-lg" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-text-primary">Email</h3>
-                <p className="text-text-secondary">info@driftx.com</p>
-                <p className="text-text-secondary">support@driftx.com</p>
+                <h3 className="text-lg font-semibold mb-2 text-[#222]">Email</h3>
+                <p className="text-[#333]">info@driftx.com</p>
+                <p className="text-[#333]">support@driftx.com</p>
               </div>
             </motion.div>
             
@@ -174,10 +175,10 @@ const Contact = () => {
                 <FaClock className="text-lg" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-text-primary">Business Hours</h3>
-                <p className="text-text-secondary">Monday - Friday: 9am - 6pm</p>
-                <p className="text-text-secondary">Saturday: 10am - 4pm</p>
-                <p className="text-text-secondary">Sunday: Closed</p>
+                <h3 className="text-lg font-semibold mb-2 text-[#222]">Business Hours</h3>
+                <p className="text-[#333]">Monday - Friday: 9am - 6pm</p>
+                <p className="text-[#333]">Saturday: 10am - 4pm</p>
+                <p className="text-[#333]">Sunday: Closed</p>
               </div>
             </motion.div>
           </motion.div>
@@ -208,7 +209,7 @@ const Contact = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2 text-text-primary">
+                <label htmlFor="name" className="block text-sm font-medium mb-2 text-[#222]">
                   Your Name
                 </label>
                 <motion.input
@@ -225,7 +226,7 @@ const Contact = () => {
               </div>
               
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2 text-text-primary">
+                <label htmlFor="email" className="block text-sm font-medium mb-2 text-[#222]">
                   Your Email
                 </label>
                 <motion.input
@@ -243,7 +244,7 @@ const Contact = () => {
             </div>
             
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium mb-2 text-text-primary">
+              <label htmlFor="subject" className="block text-sm font-medium mb-2 text-[#222]">
                 Subject
               </label>
               <motion.input
@@ -260,7 +261,7 @@ const Contact = () => {
             </div>
             
             <div>
-              <label htmlFor="message" className="block text-sm font-medium mb-2 text-text-primary">
+              <label htmlFor="message" className="block text-sm font-medium mb-2 text-[#222]">
                 Message
               </label>
               <motion.textarea

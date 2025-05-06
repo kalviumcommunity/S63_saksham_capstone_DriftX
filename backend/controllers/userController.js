@@ -52,19 +52,22 @@ export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await __testExports.User.findOne({ email });
-
+    // Find user by email
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const isMatch = await __testExports.bcrypt.compare(password, user.password);
+    // Check password match using the schema method
+    const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    const token = __testExports.generateToken(user._id);
+    // Generate token
+    const token = generateToken(user._id);
 
+    // Send response
     res.status(200).json({
       token,
       user: {

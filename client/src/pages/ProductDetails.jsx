@@ -293,7 +293,7 @@ const ProductDetails = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <span className="product-category">{product.category}</span>
-            <h1 className="product-title">{product.title}</h1>
+            <h1 className="product-title" style={{ color: '#111' }}>{product.title}</h1>
             
             <div className="product-rating">
               <div className="rating-stars">
@@ -308,27 +308,27 @@ const ProductDetails = () => {
             
             <div className="product-meta">
               <div className="meta-item">
-                <span className="meta-label">Availability:</span>
+                <span className="meta-label" style={{ color: '#111' }}>Availability:</span>
                 <span className="meta-value">{product.inStock ? 'In Stock' : 'Out of Stock'}</span>
               </div>
               
               {product.sizes && (
                 <div className="meta-item">
-                  <span className="meta-label">Sizes:</span>
+                  <span className="meta-label" style={{ color: '#111' }}>Sizes:</span>
                   <span className="meta-value">{product.sizes.join(', ')}</span>
                 </div>
               )}
               
               {product.colors && (
                 <div className="meta-item">
-                  <span className="meta-label">Colors:</span>
+                  <span className="meta-label" style={{ color: '#111' }}>Colors:</span>
                   <span className="meta-value">{product.colors.join(', ')}</span>
                 </div>
               )}
               
               {product.material && (
                 <div className="meta-item">
-                  <span className="meta-label">Material:</span>
+                  <span className="meta-label" style={{ color: '#111' }}>Material:</span>
                   <span className="meta-value">{product.material}</span>
                 </div>
               )}

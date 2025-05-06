@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import { FaShippingFast, FaAward, FaHeadset, FaMapMarkerAlt, FaEnvelope, FaPhone } from 'react-icons/fa';
 
@@ -165,8 +166,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaShippingFast className="text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-text-primary">Quality</h3>
-              <p className="text-text-secondary">We carefully curate our products to ensure they meet our high standards for quality and durability.</p>
+              <h3 className="text-xl font-semibold mb-2 text-[#222]">Quality</h3>
+              <p className="text-[#333]">We carefully curate our products to ensure they meet our high standards for quality and durability.</p>
             </motion.div>
             
             <motion.div 
@@ -176,8 +177,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaAward className="text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-text-primary">Excellence</h3>
-              <p className="text-text-secondary">We strive for excellence in every aspect of our business, from product selection to customer service.</p>
+              <h3 className="text-xl font-semibold mb-2 text-[#222]">Excellence</h3>
+              <p className="text-[#333]">We strive for excellence in every aspect of our business, from product selection to customer service.</p>
             </motion.div>
             
             <motion.div 
@@ -187,8 +188,8 @@ const About = () => {
               <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <FaHeadset className="text-2xl" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-text-primary">Customer Focus</h3>
-              <p className="text-text-secondary">Our customers are at the center of everything we do. Your satisfaction is our top priority.</p>
+              <h3 className="text-xl font-semibold mb-2 text-[#222]">Customer Focus</h3>
+              <p className="text-[#333]">Our customers are at the center of everything we do. Your satisfaction is our top priority.</p>
             </motion.div>
           </motion.div>
         </div>
@@ -228,9 +229,9 @@ const About = () => {
                 className="w-full h-64 object-cover"
               />
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-1 text-text-primary">{member.name}</h3>
+                <h3 className="text-xl font-semibold mb-1 text-[#222]">{member.name}</h3>
                 <p className="text-primary font-medium mb-3">{member.role}</p>
-                <p className="text-text-secondary">{member.bio}</p>
+                <p className="text-[#333]">{member.bio}</p>
               </div>
             </motion.div>
           ))}

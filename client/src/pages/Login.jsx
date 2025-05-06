@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -120,9 +121,9 @@ const Login = () => {
         animate="visible"
       >
         <motion.div className="text-center mb-8" variants={itemVariants}>
-          <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">DriftX</Link>
-          <h1 className="text-2xl font-bold text-text-primary mt-6 mb-2">Welcome Back</h1>
-          <p className="text-text-secondary">Sign in to your account to continue</p>
+          <Link to="/" className="text-2xl font-bold text-black">DriftX</Link>
+          <h1 className="text-2xl font-bold text-black mt-6 mb-2">Welcome Back</h1>
+          <p className="text-black">Sign in to your account to continue</p>
         </motion.div>
         
         <motion.form 
@@ -142,12 +143,12 @@ const Login = () => {
           )}
           
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-2">Email Address</label>
+            <label htmlFor="email" className="block text-sm font-medium text-black mb-2">Email Address</label>
             <input
               type="email"
               id="email"
               name="email"
-              className={`w-full px-4 py-3 rounded-md border ${formErrors.email ? 'border-error focus:border-error focus:ring-error/20' : 'border-border focus:border-primary focus:ring-primary/20'} outline-none transition-all`}
+              className={`w-full px-4 py-3 rounded-md border ${formErrors.email ? 'border-error focus:border-error focus:ring-error/20' : 'border-border focus:border-primary focus:ring-primary/20'} outline-none transition-all text-black`}
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
@@ -164,12 +165,12 @@ const Login = () => {
           </div>
           
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-2">Password</label>
+            <label htmlFor="password" className="block text-sm font-medium text-black mb-2">Password</label>
             <input
               type="password"
               id="password"
               name="password"
-              className={`w-full px-4 py-3 rounded-md border ${formErrors.password ? 'border-error focus:border-error focus:ring-error/20' : 'border-border focus:border-primary focus:ring-primary/20'} outline-none transition-all`}
+              className={`w-full px-4 py-3 rounded-md border ${formErrors.password ? 'border-error focus:border-error focus:ring-error/20' : 'border-border focus:border-primary focus:ring-primary/20'} outline-none transition-all text-black`}
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
@@ -195,10 +196,10 @@ const Login = () => {
                 checked={formData.rememberMe}
                 onChange={handleChange}
               />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-text-secondary">Remember me</label>
+              <label htmlFor="rememberMe" className="ml-2 text-sm text-black">Remember me</label>
             </div>
             
-            <Link to="/forgot-password" className="text-sm text-primary hover:text-primary-dark transition-colors">
+            <Link to="/forgot-password" className="text-sm text-black hover:text-primary transition-colors">
               Forgot Password?
             </Link>
           </div>
@@ -218,7 +219,7 @@ const Login = () => {
               <div className="w-full border-t border-border"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-text-secondary">OR</span>
+              <span className="px-4 bg-white text-black">OR</span>
             </div>
           </div>
           
@@ -231,7 +232,7 @@ const Login = () => {
               whileTap={{ y: 0 }}
             >
               <FaGoogle className="text-[#DB4437]" />
-              <span className="text-text-primary">Google</span>
+              <span className="text-black">Google</span>
             </motion.button>
             
             <motion.button 
@@ -242,13 +243,13 @@ const Login = () => {
               whileTap={{ y: 0 }}
             >
               <FaFacebookF className="text-[#4267B2]" />
-              <span className="text-text-primary">Facebook</span>
+              <span className="text-black">Facebook</span>
             </motion.button>
           </div>
           
-          <motion.p className="text-center text-text-secondary" variants={itemVariants}>
+          <motion.p className="text-center text-black" variants={itemVariants}>
             Don't have an account?{' '}
-            <Link to="/register" className="text-primary hover:text-primary-dark transition-colors">
+            <Link to="/register" className="text-black hover:text-primary transition-colors">
               Sign Up
             </Link>
           </motion.p>
