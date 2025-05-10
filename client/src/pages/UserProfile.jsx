@@ -10,7 +10,7 @@ import {
   FaExclamationCircle, FaTrophy, FaChartLine, FaShieldAlt,
   FaCreditCard, FaBox, FaComments, FaMedal, FaGem
 } from 'react-icons/fa';
-import { logout } from '../redux/slices/userSlice';
+import { logout, updateUser } from '../redux/slices/userSlice';
 import { format } from 'date-fns';
 
 const MotionCard = ({ children, className }) => {
@@ -78,6 +78,9 @@ const UserProfile = () => {
     newsletter: true,
     language: 'English'
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [formImage, setFormImage] = useState(null);
 
   const { userInfo } = useSelector((state) => state.user);
 
@@ -142,21 +145,22 @@ const UserProfile = () => {
         }
 
         setUserDetails({
-          fullName: userInfo.name || 'John Doe',
-          username: userInfo.username || 'johndoe',
-          email: userInfo.email || 'john@example.com',
-          phone: userInfo.phone || '+1234567890',
-          address: userInfo.address || '123 Fashion Street',
-          birthday: userInfo.birthday || new Date().toISOString(),
-          interests: ['Casual Wear', 'Formal Attire', 'Accessories'],
-          bio: userInfo.bio || 'Fashion enthusiast with a passion for unique styles'
+          fullName: userInfo.name || userInfo.username || userInfo.email || '',
+          username: userInfo.username || '',
+          email: userInfo.email || '',
+          phone: userInfo.phone || '',
+          address: userInfo.address || '',
+          birthday: userInfo.birthday || '',
+          interests: userInfo.interests || [],
+          bio: userInfo.bio || '',
         });
 
+        // Optionally, you can fetch stats from backend if you want real data
         setPersonalStats({
-          totalOrders: 15,
-          totalSpent: 2499.99,
-          reviewsGiven: 8,
-          pointsEarned: 350
+          totalOrders: userInfo.totalOrders || 0,
+          totalSpent: userInfo.totalSpent || 0,
+          reviewsGiven: userInfo.reviewsGiven || 0,
+          pointsEarned: userInfo.pointsEarned || 0,
         });
 
         setNotifications([
@@ -186,6 +190,22 @@ const UserProfile = () => {
     loadData();
   }, [userInfo, navigate]);
   
+  useEffect(() => {
+    if (userInfo) {
+      setFormData({
+        name: userInfo.name || '',
+        username: userInfo.username || '',
+        email: userInfo.email || '',
+        phone: userInfo.phone || '',
+        address: userInfo.address || '',
+        birthday: userInfo.birthday || '',
+        role: userInfo.role || 'user',
+        profileImage: userInfo.profileImage || '',
+      });
+      setImagePreview(userInfo.profileImage || null);
+    }
+  }, [userInfo]);
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     
@@ -204,23 +224,51 @@ const UserProfile = () => {
     }
   };
   
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-  
   const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+    setIsEditing((prev) => !prev);
+    setFormImage(null);
+    if (!isEditing && userInfo) {
+      setFormData({
+        name: userInfo.name || '',
+        username: userInfo.username || '',
+        email: userInfo.email || '',
+        phone: userInfo.phone || '',
+        address: userInfo.address || '',
+        birthday: userInfo.birthday || '',
+        role: userInfo.role || 'user',
+        profileImage: userInfo.profileImage || '',
+      });
+      setImagePreview(userInfo.profileImage || null);
+    }
   };
   
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    
-    // Here you would typically make an API call to update the user profile
-    console.log('Updating profile with:', formData);
-    
-    // For now, just toggle editing mode off
+    let payload;
+    if (formImage) {
+      payload = new FormData();
+      Object.entries(formData).forEach(([key, value]) => payload.append(key, value));
+      payload.append('avatar', formImage);
+    } else {
+      payload = { ...formData };
+    }
+    await dispatch(updateUser(payload));
     setIsEditing(false);
+  };
+  
+  const handleFormInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFormImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
   };
   
   const handleLogout = () => {
@@ -369,37 +417,56 @@ const UserProfile = () => {
   );
 
   const renderProfileInfo = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <form onSubmit={handleProfileUpdate} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Personal Information Card */}
       <motion.div 
         className="lg:col-span-2 bg-white rounded-2xl shadow-xl p-6"
         whileHover={{ scale: 1.01 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <h3 className="text-xl font-semibold mb-6 flex items-center text-black">
-          <FaUser className="mr-2 text-primary" /> Personal Information
-        </h3>
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-semibold flex items-center text-black">
+            <FaUser className="mr-2 text-primary" /> Personal Information
+          </h3>
+          {!isEditing && (
+            <button type="button" onClick={handleEditToggle} className="text-primary flex items-center gap-1 hover:underline">
+              <FaEdit /> Edit
+            </button>
+          )}
+        </div>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-4">
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <FaUserTag className="text-primary text-xl" />
               <div>
                 <p className="text-sm text-gray-600">Full Name</p>
-                <p className="font-medium text-black">{userDetails.fullName}</p>
+                {isEditing ? (
+                  <input name="name" value={formData.name} onChange={handleFormInputChange} className="font-medium text-black bg-white border rounded px-2 py-1 w-full" />
+                ) : (
+                  <p className="font-medium text-black">{userInfo?.name}</p>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <FaEnvelope className="text-primary text-xl" />
               <div>
                 <p className="text-sm text-gray-600">Email</p>
-                <p className="font-medium text-black">{userDetails.email}</p>
+                {isEditing ? (
+                  <input name="email" value={formData.email} onChange={handleFormInputChange} className="font-medium text-black bg-white border rounded px-2 py-1 w-full" />
+                ) : (
+                  <p className="font-medium text-black">{userInfo?.email}</p>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <FaPhone className="text-primary text-xl" />
               <div>
                 <p className="text-sm text-gray-600">Phone</p>
-                <p className="font-medium text-black">{userDetails.phone}</p>
+                {isEditing ? (
+                  <input name="phone" value={formData.phone} onChange={handleFormInputChange} className="font-medium text-black bg-white border rounded px-2 py-1 w-full" />
+                ) : (
+                  <p className="font-medium text-black">{userInfo?.phone}</p>
+                )}
               </div>
             </div>
           </div>
@@ -408,25 +475,62 @@ const UserProfile = () => {
               <FaMapMarkerAlt className="text-primary text-xl" />
               <div>
                 <p className="text-sm text-gray-600">Address</p>
-                <p className="font-medium text-black">{userDetails.address}</p>
+                {isEditing ? (
+                  <input name="address" value={formData.address} onChange={handleFormInputChange} className="font-medium text-black bg-white border rounded px-2 py-1 w-full" />
+                ) : (
+                  <p className="font-medium text-black">{userInfo?.address}</p>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <FaBirthdayCake className="text-primary text-xl" />
               <div>
                 <p className="text-sm text-gray-600">Birthday</p>
-                <p className="font-medium text-black">{formatDate(userDetails.birthday)}</p>
+                {isEditing ? (
+                  <input type="date" name="birthday" value={formData.birthday ? formData.birthday.slice(0,10) : ''} onChange={handleFormInputChange} className="font-medium text-black bg-white border rounded px-2 py-1 w-full" />
+                ) : (
+                  <p className="font-medium text-black">{formatDate(userInfo?.birthday)}</p>
+                )}
               </div>
             </div>
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <FaGem className="text-primary text-xl" />
               <div>
                 <p className="text-sm text-gray-600">Member Status</p>
-                <p className="font-medium text-black">Premium Member</p>
+                {isEditing ? (
+                  <select name="role" value={formData.role} onChange={handleFormInputChange} className="font-medium text-black bg-white border rounded px-2 py-1 w-full">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                ) : (
+                  <p className="font-medium text-black">{userInfo?.role === 'admin' ? 'Admin' : 'Premium Member'}</p>
+                )}
               </div>
             </div>
           </div>
         </div>
+        {/* Profile Image Upload */}
+        <div className="flex items-center mt-6">
+          <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-primary mr-4">
+            <img src={imagePreview || userInfo?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name || userInfo?.name || '')}&background=random`} alt="Profile" className="w-full h-full object-cover" />
+            {isEditing && (
+              <label className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center cursor-pointer">
+                <FaCamera className="text-white text-2xl" />
+                <input type="file" accept="image/*" className="hidden" onChange={handleFormImageChange} />
+              </label>
+            )}
+          </div>
+          {isEditing && (
+            <span className="text-gray-500">Click to change photo</span>
+          )}
+        </div>
+        {/* Save/Cancel Buttons */}
+        {isEditing && (
+          <div className="flex gap-4 mt-6">
+            <button type="submit" className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark">Save</button>
+            <button type="button" className="bg-gray-300 text-black px-6 py-2 rounded hover:bg-gray-400" onClick={handleEditToggle}>Cancel</button>
+          </div>
+        )}
       </motion.div>
 
       {/* Stats Overview Card */}
@@ -577,7 +681,7 @@ const UserProfile = () => {
           </div>
         </div>
       </motion.div>
-    </div>
+    </form>
   );
   
   if (isLoading) {
