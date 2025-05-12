@@ -30,6 +30,7 @@ import {
 } from "react-icons/bs";
 import { FaFilter, FaTshirt, FaRedhat, FaShoePrints } from 'react-icons/fa';
 import { GiTrousers } from 'react-icons/gi';
+import mensCollectionImg from '/images/mens-collection.jpg';
 
 // Sort options
 const sortOptions = [
@@ -122,6 +123,19 @@ const spinRewards = [
   "BUY 1 GET 1 50% OFF"
 ];
 
+// Modal component
+const Modal = ({ open, onClose, children }) => {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full relative">
+        <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl">&times;</button>
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const Mens = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -154,6 +168,8 @@ const Mens = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -341,61 +357,15 @@ const Mens = () => {
     // Add voice recognition logic here
   };
 
+  // Modal handlers
+  const showModal = (content) => {
+    setModalContent(content);
+    setModalOpen(true);
+  };
+  const closeModal = () => setModalOpen(false);
+
   return (
     <div className="min-h-screen bg-[#1E1E1E] pb-16">
-      {/* Sticky Header */}
-      <motion.header
-        className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg shadow-sm"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex flex-col md:flex-row md:items-center gap-4 w-full">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100 md:hidden"
-              >
-                {isSidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-              </button>
-              <h1 className="text-xl font-bold text-gray-900">Men's Collection</h1>
-        </div>
-            {/* Categories as horizontal row next to heading */}
-            <div className="flex items-center space-x-4 overflow-x-auto pb-2 md:pb-0">
-              {categories.map((category) => (
-                <motion.div
-                  key={category.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Link
-                    to={category.path}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
-                      selectedCategory === category.id
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-[#2D2D2D] text-gray-300 hover:bg-gray-700'
-                    } transition-colors duration-300`}
-                  >
-                    <category.icon className="text-lg" />
-                    <span>{category.name}</span>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
-            <button
-              onClick={() => setIsFilterPanelOpen(true)}
-              className="p-2 rounded-lg hover:bg-gray-100 flex items-center gap-2"
-            >
-              <FiSliders size={20} />
-              <span className="hidden sm:inline">Filters</span>
-            </button>
-          </div>
-        </div>
-      </motion.header>
-
       {/* Enhanced Hero Section */}
       <motion.section 
         className="relative h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700"
@@ -777,6 +747,110 @@ const Mens = () => {
           </div>
         </div>
       </motion.section>
+
+      {/* --- Advanced Animated Scroll Sections --- */}
+      {/* 1. Parallax Banner Section */}
+      <motion.section className="w-full h-[60vh] relative flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(120deg, #1e3c72 0%, #2a5298 100%)' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <motion.img src="/images/mens-collection.jpg" alt="Parallax Banner" className="absolute w-full h-full object-cover opacity-40" style={{ y: [0, 60, 0] }} animate={{ y: [0, 60, 0] }} transition={{ duration: 6, repeat: Infinity, repeatType: 'reverse' }} />
+        <motion.h2 className="relative z-10 text-5xl font-extrabold text-white drop-shadow-lg" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3, duration: 1 }}>Futuristic Fashion</motion.h2>
+      </motion.section>
+
+      {/* 2. 3D Tilt Product Cards */}
+      <motion.section className="w-full py-20 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } }}>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+          {[1,2,3,4].map((i) => (
+            <motion.div key={i} className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center cursor-pointer" whileHover={{ rotateY: 10, scale: 1.05, boxShadow: '0 8px 32px #0004' }} transition={{ type: 'spring', stiffness: 200 }}>
+              <img src={mensCollectionImg} alt="Tech Product" className="w-40 h-40 object-cover rounded-xl mb-4" />
+              <h3 className="text-xl font-bold mb-2">Tech Wear {i}</h3>
+              <p className="text-gray-600 mb-4">Next-gen smart clothing with built-in sensors and AR features.</p>
+              <button className="px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition" onClick={() => showModal(<div><h2 className='text-xl font-bold mb-2'>AR Preview</h2><img src={mensCollectionImg} alt='AR Preview' className='w-full rounded-lg mb-4'/><p>AR Preview coming soon!</p></div>)}>Try AR Preview</button>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* 3. Interactive Product Carousel */}
+      <motion.section className="w-full py-20 bg-gradient-to-l from-blue-900 via-blue-700 to-blue-900" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-3xl font-bold text-white mb-8 text-center">AI-Powered Recommendations</h2>
+          <motion.div className="flex gap-8 overflow-x-auto pb-4">
+            {[1,2,3,4,5].map((i) => (
+              <motion.div key={i} className="min-w-[300px] bg-white/90 rounded-xl shadow-lg p-6 flex flex-col items-center" whileHover={{ scale: 1.07 }}>
+                <img src={mensCollectionImg} alt="AI Product" className="w-32 h-32 object-cover rounded-lg mb-3" />
+                <h4 className="font-semibold mb-1">AI Pick #{i}</h4>
+                <p className="text-gray-700 text-sm">Handpicked for you by our AI stylist.</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </motion.section>
+
+      {/* 4. Animated Counters Section */}
+      <motion.section className="w-full py-16 bg-black text-white flex flex-col items-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <h2 className="text-2xl font-bold mb-8">Our Impact</h2>
+        <div className="flex gap-16">
+          {[{label:'Smart Outfits',end:1200},{label:'AR Try-Ons',end:800},{label:'Satisfied Users',end:5000},{label:'Tech Awards',end:12}].map((item,i)=>(
+            <motion.div key={i} className="flex flex-col items-center">
+              <motion.span className="text-4xl font-extrabold" initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ duration: 0.7, delay: i*0.2 }}>{item.end}+</motion.span>
+              <span className="text-lg mt-2">{item.label}</span>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* 5. Product Configurator Section */}
+      <motion.section className="w-full py-20 bg-gradient-to-br from-gray-800 via-gray-900 to-black flex flex-col items-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <h2 className="text-3xl font-bold text-white mb-8">Customize Your Look</h2>
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="bg-white rounded-xl p-6 shadow-lg flex flex-col items-center">
+            <img src={mensCollectionImg} alt="Configurator" className="w-32 h-32 object-cover rounded-lg mb-3" />
+            <label className="mb-2 font-semibold">Choose Color</label>
+            <select className="mb-4 px-4 py-2 rounded border">
+              <option>Black</option><option>Blue</option><option>White</option><option>Red</option>
+            </select>
+            <label className="mb-2 font-semibold">Size</label>
+            <select className="mb-4 px-4 py-2 rounded border">
+              <option>M</option><option>L</option><option>XL</option><option>XXL</option>
+            </select>
+            <button className="px-6 py-2 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition" onClick={() => showModal(<div><h2 className='text-xl font-bold mb-2'>Preview</h2><img src={mensCollectionImg} alt='Preview' className='w-full rounded-lg mb-4'/><p>Preview of your custom look coming soon!</p></div>)}>Preview</button>
+          </div>
+          <div className="flex flex-col justify-center">
+            <p className="text-white text-lg max-w-md">Use our advanced configurator to design your own techwear outfit. Instantly preview in 3D and AR!</p>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* 6. AR Preview Section */}
+      <motion.section className="w-full py-20 bg-gradient-to-t from-blue-900 via-blue-700 to-blue-900 flex flex-col items-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <h2 className="text-3xl font-bold text-white mb-8">Augmented Reality Preview</h2>
+        <div className="flex flex-col md:flex-row gap-8 items-center">
+          <img src={mensCollectionImg} alt="AR Preview" className="w-60 h-80 object-cover rounded-xl shadow-2xl" />
+          <div className="text-white max-w-md">
+            <p className="mb-4">See how our latest collection looks on you in real time using your phone's camera. Try before you buy with our AR preview!</p>
+            <button className="px-8 py-3 bg-white text-blue-700 font-bold rounded-full hover:bg-blue-100 transition" onClick={() => showModal(<div><h2 className='text-xl font-bold mb-2'>AR Preview</h2><img src={mensCollectionImg} alt='AR Preview' className='w-full rounded-lg mb-4'/><p>AR Preview coming soon!</p></div>)}>Launch AR</button>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* 7. AI Style Quiz Section */}
+      <motion.section className="w-full py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <h2 className="text-3xl font-bold text-white mb-8">AI Style Quiz</h2>
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-xl w-full flex flex-col items-center">
+          <p className="mb-6 text-lg text-gray-700">Answer a few questions and let our AI recommend your perfect outfit.</p>
+          <button className="px-8 py-3 bg-blue-600 text-white font-bold rounded-full hover:bg-blue-700 transition" onClick={() => showModal(<div><h2 className='text-xl font-bold mb-2'>AI Style Quiz</h2><p>Quiz functionality coming soon!</p></div>)}>Start Quiz</button>
+        </div>
+      </motion.section>
+
+      {/* 8. Animated Infinite Logo Scroll */}
+      <motion.section className="w-full py-12 bg-black overflow-hidden" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 1 }}>
+        <motion.div className="flex items-center" animate={{ x: [0, -600, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}>
+          {[...Array(12)].map((_, i) => (
+            <img key={i} src={mensCollectionImg} alt="Brand Logo" className="mx-8 w-20 h-20 object-contain grayscale hover:grayscale-0 transition duration-300" />
+          ))}
+        </motion.div>
+      </motion.section>
+
+      <Modal open={modalOpen} onClose={closeModal}>{modalContent}</Modal>
     </div>
   );
 };

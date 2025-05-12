@@ -335,7 +335,6 @@ const Womens = () => {
       {/* --- BEGIN ULTRA-MODERN WOMEN'S PAGE SECTIONS --- */}
       <HeroParallaxSection />
       <LuxuryCategoriesShowcase />
-      <TrendingNowCarousel />
       <BigSaleCountdownSection />
       <DesignerBrandsTicker />
       <ShopByOccasionTilt />
@@ -610,131 +609,6 @@ function LuxuryCategoriesShowcase() {
           ))}
         </div></div>
       </div>
-    </motion.section>
-  );
-}
-
-// 3. TrendingNowCarousel
-function TrendingNowCarousel() {
-  const trendingProducts = [
-    {
-      name: 'Pastel Blazer',
-      price: 129,
-      image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-      name: 'Silk Dress',
-      price: 199,
-      image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-      name: 'Luxury Heels',
-      price: 249,
-      image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-      name: 'Designer Bag',
-      price: 399,
-      image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80',
-    },
-    {
-      name: 'Statement Jewelry',
-      price: 89,
-      image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
-    },
-  ];
-  const [modal, setModal] = useState(null);
-  const swiperRef = useRef(null);
-  useEffect(() => {
-    if (!swiperRef.current) return;
-    // Parallax and fade-in for Swiper
-    gsap.fromTo(
-      swiperRef.current,
-      { y: 80, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: swiperRef.current,
-          start: 'top 80%',
-        },
-      }
-    );
-    // Card lift and shadow on scroll-in
-    gsap.utils.toArray('.trending-card').forEach((card, i) => {
-      gsap.fromTo(
-        card,
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          delay: i * 0.08,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 90%',
-          },
-        }
-      );
-    });
-  }, []);
-  return (
-    <motion.section className="py-20 px-4 max-w-7xl mx-auto" initial={{ opacity: 0, y: 60 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}>
-      <motion.h2 initial={{opacity:0, y:40}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.7}} className="text-4xl font-serif font-bold mb-8 text-pink-600">Trending Now</motion.h2>
-      <div ref={swiperRef}>
-        <Swiper
-          spaceBetween={32}
-          slidesPerView={1.2}
-          breakpoints={{
-            640: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-          parallax={true}
-          pagination={{ clickable: true }}
-          navigation={true}
-          className="w-full"
-        >
-          {trendingProducts.map((product, i) => (
-            <SwiperSlide key={i}>
-              <motion.div
-                initial={{opacity:0, y:40}}
-                whileInView={{opacity:1, y:0}}
-                viewport={{once:true}}
-                transition={{duration:0.5, delay:i*0.1}}
-                className="trending-card bg-pink-50 rounded-2xl shadow-lg p-6 flex flex-col items-center justify-end h-96 relative group hover:shadow-2xl transition-all duration-300 cursor-pointer"
-                whileHover={{ scale: 1.04, boxShadow: "0 8px 32px 0 #f9a8d455" }}
-              >
-                <img src={product.image} alt={product.name} className="w-32 h-40 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform duration-500" />
-                {/* Shine effect */}
-                <span className="absolute inset-0 pointer-events-none">
-                  <span className="shine block absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-to-tr from-white/30 via-white/0 to-white/0 rotate-12 opacity-0 group-hover:opacity-100 transition duration-700" />
-                </span>
-                <button onClick={()=>setModal(product)} className="absolute top-4 right-4 bg-white rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition"><span role="img" aria-label="heart">💖</span></button>
-                <div className="text-lg font-semibold mb-1">{product.name}</div>
-                <div className="text-pink-500 font-bold mb-2">${product.price}</div>
-                <button onClick={()=>setModal(product)} className="opacity-0 group-hover:opacity-100 transition bg-pink-500 text-white px-5 py-2 rounded-full font-medium mt-2 shadow hover:bg-pink-600">Quick View</button>
-              </motion.div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-      {/* Modal for Quick View */}
-      <AnimatePresence>
-        {modal && (
-          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <motion.div initial={{scale:0.8, opacity:0}} animate={{scale:1, opacity:1}} exit={{scale:0.8, opacity:0}} className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full relative">
-              <button onClick={()=>setModal(null)} className="absolute top-2 right-2 text-gray-400 hover:text-pink-500 text-2xl">&times;</button>
-              <img src={modal.image} alt={modal.name} className="w-40 h-52 object-cover rounded-xl mx-auto mb-4" />
-              <div className="text-2xl font-bold text-pink-600 mb-2">{modal.name}</div>
-              <div className="text-lg text-gray-700 mb-4">${modal.price}</div>
-              <button className="w-full bg-pink-500 text-white py-3 rounded-full font-semibold shadow hover:bg-pink-600 transition-all">Add to Cart</button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.section>
   );
 }

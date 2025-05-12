@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { 
   FaShoppingCart, 
   FaSearch, 
@@ -18,10 +18,13 @@ import {
   FaUserPlus
 } from "react-icons/fa";
 import { searchProductsDummy } from '../services/api';
+import { logout } from "../redux/slices/userSlice";
 
 // Add this before the Navbar component
 const UserDropdown = ({ isOpen, onClose }) => {
   const { userInfo } = useSelector((state) => state.user || { userInfo: null });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   
   const dropdownVariants = {
     hidden: { 
@@ -64,7 +67,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
             {userInfo ? (
               <>
                 <p className="text-sm text-gray-500">Hello,</p>
-                <p className="font-medium text-gray-900">{userInfo.name}</p>
+                <p className="font-medium text-gray-900">{userInfo.username || userInfo.name || userInfo.email}</p>
               </>
             ) : (
               <div className="flex flex-col space-y-2">
@@ -113,13 +116,17 @@ const UserDropdown = ({ isOpen, onClose }) => {
 
           {userInfo && (
             <div className="border-t border-gray-100 py-2 px-2">
-              <Link
-                to="/logout"
-                className="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md"
+              <button
+                className="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md w-full text-left"
+                onClick={() => {
+                  dispatch(logout());
+                  navigate("/login");
+                  onClose && onClose();
+                }}
               >
                 <FaSignOutAlt className="w-4 h-4 mr-3" />
                 Sign Out
-              </Link>
+              </button>
             </div>
           )}
         </motion.div>
@@ -145,7 +152,7 @@ const Navbar = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const searchTimeout = useRef(null);
-  const navigate = useLocation().navigate || (() => {}); // fallback for navigate
+  const navigate = useNavigate();
   const searchBarRef = useRef(null); // Add ref for search bar
 
   // Handle scroll effect
@@ -711,7 +718,7 @@ const Navbar = () => {
                   {userInfo ? (
                     <div className="text-white">
                       <p className="text-sm opacity-70">Logged in as</p>
-                      <p className="font-medium">{userInfo.name}</p>
+                      <p className="font-medium">{userInfo.username || userInfo.name || userInfo.email}</p>
                     </div>
                   ) : (
                     <div className="flex space-x-4">

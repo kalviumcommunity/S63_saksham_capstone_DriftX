@@ -20,18 +20,6 @@ API.interceptors.request.use(
   }
 );
 
-// Add response interceptor for error handling
-API.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('userInfo');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
-
 // 🛒 Product APIs
 export const getAllProducts = async () => {
   try {
@@ -50,7 +38,8 @@ export const deleteProduct = (id) => API.delete(`/products/${id}`);
 export const loginUser = async (data) => {
   try {
     const response = await API.post('/users/login', data);
-    return response.data;
+    // Return both user and token
+    return { user: response.data.user, token: response.data.token };
   } catch (error) {
     console.error('Error logging in:', error);
     throw error;
@@ -59,7 +48,12 @@ export const loginUser = async (data) => {
 
 export const updateUser = async (userData) => {
   try {
-    const response = await API.put('/users/profile', userData);
+    let config = {};
+    // If userData is FormData, do not set Content-Type (let browser set it)
+    if (userData instanceof FormData) {
+      config = { headers: { } };
+    }
+    const response = await API.put('/users/profile', userData, config);
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);

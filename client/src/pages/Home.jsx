@@ -7,6 +7,11 @@ import ProductCard from "../components/ProductCard";
 import ProductShowcase from "../components/ProductShowcase";
 import InclusivityShowcase from "../components/InclusivityShowcase";
 import { getAllProducts } from "../services/api";
+import AISearchAutocomplete from '../components/AISearchAutocomplete';
+import ThreeDMall from '../components/ThreeDMall';
+import AIRecommendations from '../components/AIRecommendations';
+import VirtualTryOn from '../components/VirtualTryOn';
+import LiveStyleAssistant from '../components/LiveStyleAssistant';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -249,7 +254,7 @@ const Home = () => {
 
   return (
     <motion.div 
-      className="w-full min-h-screen bg-[#1E1E1E] overflow-x-hidden"
+      className="w-full min-h-full"
       style={{ opacity, scale }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -314,6 +319,54 @@ const Home = () => {
               </motion.div>
             </div>
           </section>
+
+          {/* AI Search Section */}
+          <section className="relative min-h-screen w-full bg-gradient-to-b from-gray-900 to-black py-20 overflow-hidden">
+            {/* Background Video */}
+            <div className="absolute inset-0 z-0">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src="/videos/sameer1.mp4" type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60" />
+            </div>
+            <div className="relative z-10 container mx-auto px-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-12">
+                AI-Powered Search
+              </h2>
+              <AISearchAutocomplete className="mb-8" />
+            </div>
+          </section>
+
+          {/* AI Recommendations Section */}
+          <div className="mb-24" />
+          <AIRecommendations />
+
+          {/* Virtual Try-On Section */}
+          <div className="mb-24" />
+          <VirtualTryOn />
+
+          {/* Live Style Assistant Section */}
+          <div className="mb-24" />
+          <LiveStyleAssistant />
+
+          {/* 3D Mall Section */}
+          <section className="relative min-h-screen w-full bg-gradient-to-b from-gray-900 to-black py-20">
+            <div className="container mx-auto px-4">
+              <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-12">
+                Explore Our 3D Mall
+              </h2>
+              <ThreeDMall />
+            </div>
+          </section>
+
+          {/* New Arrivals Section */}
+          <NewArrivalsCarousel />
 
           {/* Category Split Banner */}
           <motion.section 
@@ -428,9 +481,6 @@ const Home = () => {
               </div>
             </motion.div>
           </motion.section>
-
-          {/* New Arrivals Section */}
-          <NewArrivalsCarousel />
 
           {/* Blog Articles Section */}
           <section className="w-full py-24 px-4 sm:px-8 bg-[#1E1E1E]">
@@ -785,7 +835,6 @@ const Home = () => {
           
           {/* Product Showcase Section */}
           <ProductShowcase />
-          
         </>
       )}
     </motion.div>

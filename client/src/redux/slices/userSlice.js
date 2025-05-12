@@ -4,9 +4,16 @@ import { loginUser as apiLoginUser, updateUser as apiUpdateUser, deleteUser as a
 // Login user thunk
 export const loginUser = createAsyncThunk('user/login', async ({ email, password }, thunkAPI) => {
   try {
-    const { data } = await apiLoginUser({ email, password });
-    localStorage.setItem('userInfo', JSON.stringify(data)); // Save token & user
-    return data;
+    const response = await apiLoginUser({ email, password });
+    // response should be { user, token }
+    if (response && response.token && response.user) {
+      localStorage.setItem('userInfo', JSON.stringify({ ...response.user, token: response.token }));
+      return { ...response.user, token: response.token };
+    } else {
+      // fallback for old structure
+      localStorage.setItem('userInfo', JSON.stringify(response));
+      return response;
+    }
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
   }
@@ -15,9 +22,17 @@ export const loginUser = createAsyncThunk('user/login', async ({ email, password
 // Update user thunk
 export const updateUser = createAsyncThunk('user/update', async (userData, thunkAPI) => {
   try {
-    const { data } = await apiUpdateUser(userData);
-    localStorage.setItem('userInfo', JSON.stringify(data));
-    return data;
+    const updatedUser = await apiUpdateUser(userData);
+    // keep the token from the old userInfo
+    const oldUserInfo = localStorage.getItem('userInfo');
+    let token = '';
+    if (oldUserInfo) {
+      try {
+        token = JSON.parse(oldUserInfo).token;
+      } catch {}
+    }
+    localStorage.setItem('userInfo', JSON.stringify({ ...updatedUser, token }));
+    return { ...updatedUser, token };
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Update failed');
   }
@@ -37,7 +52,16 @@ export const deleteUser = createAsyncThunk('user/delete', async (_, thunkAPI) =>
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null,
+    userInfo: (() => {
+      const userInfoStr = localStorage.getItem('userInfo');
+      if (!userInfoStr) return null;
+      try {
+        return JSON.parse(userInfoStr);
+      } catch {
+        localStorage.removeItem('userInfo');
+        return null;
+      }
+    })(),
     loading: false,
     error: null,
   },
