@@ -35,6 +35,7 @@ import BlogRoutes from './routes/BlogRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
+import ReactGA from 'react-ga4';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -52,6 +53,10 @@ const ScrollToTop = () => {
 const AppContent = () => {
   const location = useLocation();
   
+  useEffect(() => {
+    ReactGA.send({ hitType: 'pageview', page: location.pathname });
+  }, [location]);
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#0f172a]">
       <ScrollToTop />

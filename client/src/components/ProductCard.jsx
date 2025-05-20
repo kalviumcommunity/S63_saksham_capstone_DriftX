@@ -3,6 +3,7 @@ import { addToCart } from "../redux/slices/cartSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaShoppingCart, FaStar, FaStarHalfAlt, FaRegStar, FaTshirt, FaRuler } from "react-icons/fa";
 import { useState } from "react";
+import ReactGA from 'react-ga4';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
@@ -102,7 +103,10 @@ const ProductCard = ({ product }) => {
           
           <motion.button
             className="w-full bg-gradient-to-r from-primary to-secondary text-white rounded-lg py-3 font-semibold text-sm transition-all duration-300 hover:from-primary-dark hover:to-primary hover:-translate-y-0.5 flex items-center justify-center gap-2"
-            onClick={() => dispatch(addToCart(product))}
+            onClick={() => {
+              dispatch(addToCart(product));
+              ReactGA.event({ category: 'Cart', action: 'Added to Cart', label: product.name || product.title });
+            }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >

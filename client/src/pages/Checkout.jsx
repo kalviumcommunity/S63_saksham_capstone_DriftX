@@ -6,6 +6,7 @@ import { FaLock, FaCreditCard, FaPaypal, FaApplePay, FaGooglePay, FaShippingFast
          FaBox, FaUser, FaMapMarkerAlt, FaPhone, FaEnvelope, FaInfoCircle, 
          FaRobot, FaArrowRight, FaArrowLeft, FaMoneyBillWave, FaMobileAlt, FaWallet } from 'react-icons/fa';
 import { FaCalendar } from 'react-icons/fa';
+import ReactGA from 'react-ga4';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -162,6 +163,7 @@ const Checkout = () => {
 
   const handlePlaceOrder = () => {
     setLoading(true);
+    ReactGA.event({ category: 'Checkout', action: 'Placed Order' });
     // Simulate order processing
     setTimeout(() => {
       setLoading(false);

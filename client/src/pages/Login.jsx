@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaGoogle, FaFacebookF, FaExclamationCircle } from 'react-icons/fa';
 import { loginUser } from '../redux/slices/userSlice';
+import ReactGA from 'react-ga4';
 
 const Login = () => {
   // Form state
@@ -83,6 +84,7 @@ const Login = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (userInfo) {
+      ReactGA.event({ category: 'User', action: 'Logged In' });
       navigate('/');
     }
   }, [userInfo, navigate]);

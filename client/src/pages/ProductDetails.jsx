@@ -18,6 +18,7 @@ import {
 import { addToCart } from '../redux/slices/cartSlice';
 import ProductCard from '../components/ProductCard';
 import './ProductDetails.css';
+import ReactGA from 'react-ga4';
 
 // Sample clothing product data
 const menClothingProducts = [
@@ -181,6 +182,12 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
   
+  useEffect(() => {
+    if (product) {
+      ReactGA.event({ category: 'Product', action: 'Viewed Product', label: product.title || product.name });
+    }
+  }, [product]);
+  
   // Handle quantity change
   const handleQuantityChange = (value) => {
     const newQuantity = quantity + value;
@@ -193,6 +200,7 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCart({ ...product, quantity }));
+      ReactGA.event({ category: 'Cart', action: 'Added to Cart', label: product.title || product.name });
     }
   };
   
