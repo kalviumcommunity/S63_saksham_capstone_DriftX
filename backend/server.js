@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
+import { startDailyStatsJob } from './cron/dailyStatsJob.js';
 
 // Routes + DB
 import connectDB from './Database/db.js';
@@ -60,6 +61,9 @@ app.use((err, req, res, next) => {
   console.error('💥 Server error:', err.stack);
   res.status(500).json({ message: 'Something went wrong' });
 });
+
+// Start daily stats cron job
+startDailyStatsJob();
 
 // Start server
 const PORT = process.env.PORT || 5000;
