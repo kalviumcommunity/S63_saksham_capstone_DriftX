@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import rateLimit from 'express-rate-limit';
 
 // Routes + DB
 import connectDB from './Database/db.js';
@@ -30,6 +31,14 @@ connectDB();
 app.use(cors());
 app.use(express.json()); // handle JSON body
 app.use(express.urlencoded({ extended: true })); // handle form-urlencoded (for multer)
+
+// Rate limiting middleware for all /api routes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes.'
+});
+app.use('/api', apiLimiter);
 
 // Routes
 app.use('/api/products', productRoutes);
