@@ -21,7 +21,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
+    "node-cron": "^4.0.6",
     "openai": "^4.96.0",
+    "redis": "^5.1.0",
     "sharp": "^0.34.1",
     "uuid": "^11.1.0"
   },
