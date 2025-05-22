@@ -26,6 +26,7 @@
     "axios": "^1.6.2",
     "canvas-confetti": "^1.9.3",
     "date-fns": "^4.1.0",
+    "firebase": "^11.8.1",
     "framer-motion": "^10.18.0",
     "gsap": "^3.13.0",
     "lodash": "^4.17.21",
