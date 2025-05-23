@@ -1,15 +1,13 @@
 // src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
-import App from './App';
+import { ApolloProvider } from '@apollo/client';
+import { client } from './apolloClient';
+import OrderStatusSubscription from './components/OrderStatusSubscription';
 import './index.css'; // Import Tailwind CSS
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+  <ApolloProvider client={client}>
+    <OrderStatusSubscription />
+  </ApolloProvider>
 );
