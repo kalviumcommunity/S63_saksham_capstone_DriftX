@@ -6,6 +6,8 @@ import { FaLock, FaCreditCard, FaPaypal, FaApplePay, FaGooglePay, FaShippingFast
          FaBox, FaUser, FaMapMarkerAlt, FaPhone, FaEnvelope, FaInfoCircle, 
          FaRobot, FaArrowRight, FaArrowLeft, FaMoneyBillWave, FaMobileAlt, FaWallet } from 'react-icons/fa';
 import { FaCalendar } from 'react-icons/fa';
+import PaypalButton from "../components/PaypalButton";
+import PaypalRedirectButton from "../components/PaypalRedirectButton";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
   const chatRef = useRef(null);
+  const [showPaypal, setShowPaypal] = useState(false);
   
   const [formData, setFormData] = useState({
     // Shipping Information
@@ -511,7 +514,7 @@ const Checkout = () => {
                 </motion.div>
               )}
 
-              {(paymentMethod === 'paypal' || paymentMethod === 'googlepay' || paymentMethod === 'applepay') && (
+              {paymentMethod === 'paypal' && (
                 <motion.div
                   variants={containerVariants}
                   initial="hidden"
@@ -520,23 +523,29 @@ const Checkout = () => {
                   className="p-6 bg-gray-50 rounded-lg text-center"
                 >
                   <p className="text-gray-600 mb-4">
-                    You will be redirected to {
-                      paymentMethod === 'paypal' ? 'PayPal' :
-                      paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay'
-                    } to complete your payment securely.
+                    You will be redirected to PayPal to complete your payment securely.
                   </p>
                   <motion.button
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    onClick={async () => {
+                      // Call backend to create PayPal order and redirect
+                      const response = await fetch("/api/paypal/create-order", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ amount: "49.99" }),
+                      });
+                      const data = await response.json();
+                      if (data && data.approvalUrl) {
+                        window.location.href = data.approvalUrl;
+                      } else {
+                        alert("Failed to initiate PayPal payment.");
+                      }
+                    }}
                   >
-                    {paymentMethod === 'paypal' && <FaPaypal />}
-                    {paymentMethod === 'googlepay' && <FaGooglePay />}
-                    {paymentMethod === 'applepay' && <FaApplePay />}
-                    Continue with {
-                      paymentMethod === 'paypal' ? 'PayPal' :
-                      paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay'
-                    }
+                    <FaPaypal />
+                    Continue with PayPal
                   </motion.button>
                 </motion.div>
               )}
