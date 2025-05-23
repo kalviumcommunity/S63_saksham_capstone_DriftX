@@ -4,11 +4,14 @@ import { motion } from 'framer-motion';
 import { FaBox, FaShippingFast, FaCheckCircle, FaTimesCircle, FaUndo } from 'react-icons/fa';
 import { io as socketIOClient } from 'socket.io-client';
 
+const SOCKET_URL = 'http://localhost:5000'; // Adjust if backend runs elsewhere
+
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const user = useSelector(state => state.auth.user);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -22,6 +25,23 @@ const OrderHistory = () => {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         setOrders(data);
+        // --- SOCKET.IO: Connect and join rooms ---
+        if (token && data.length > 0) {
+          const sock = socketIOClient(SOCKET_URL, {
+            auth: { token }
+          });
+          setSocket(sock);
+          data.forEach(order => {
+            sock.emit('joinOrderRoom', order._id);
+          });
+          sock.on('orderStatusUpdate', (update) => {
+            setOrders(prevOrders => prevOrders.map(order =>
+              order._id === update.orderId
+                ? { ...order, orderStatus: update.status, paymentStatus: update.paymentStatus, updatedAt: update.updatedAt }
+                : order
+            ));
+          });
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -32,6 +52,16 @@ const OrderHistory = () => {
     if (user) {
       fetchOrders();
     }
+    // Cleanup on unmount
+    return () => {
+      if (socket) {
+        orders.forEach(order => {
+          socket.emit('leaveOrderRoom', order._id);
+        });
+        socket.disconnect();
+      }
+    };
+    // eslint-disable-next-line
   }, [user]);
 
   const getStatusIcon = (status) => {
