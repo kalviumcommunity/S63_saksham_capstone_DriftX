@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaLock, FaCreditCard, FaPaypal, FaApplePay, FaGooglePay, FaShippingFast, 
          FaBox, FaUser, FaMapMarkerAlt, FaPhone, FaEnvelope, FaInfoCircle, 
          FaRobot, FaArrowRight, FaArrowLeft, FaMoneyBillWave, FaMobileAlt, FaWallet } from 'react-icons/fa';
@@ -11,6 +11,9 @@ import PaypalRedirectButton from "../components/PaypalRedirectButton";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const orderId = queryParams.get('orderId');
   // State management
   const [currentStep, setCurrentStep] = useState(1);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
@@ -47,6 +50,12 @@ const Checkout = () => {
       content: 'Hello! I\'m your AI shopping assistant. How can I help you with your checkout?'
     }
   ]);
+
+  const cartItems = useSelector(state => state.cart.items);
+  const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const shipping = subtotal > 100 ? 0 : 10;
+  const tax = subtotal * 0.07;
+  const totalAmount = (subtotal + shipping + tax).toFixed(2);
 
   // Animation variants
   const pageTransition = {
@@ -172,6 +181,30 @@ const Checkout = () => {
     }, 2000);
   };
 
+  useEffect(() => {
+    if (orderId) {
+      const token = localStorage.getItem('token');
+      fetch(`/api/paypal/capture-order/${orderId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Order captured and updated successfully!');
+          } else {
+            alert('Failed to capture order: ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('Error capturing order: ' + err.message);
+        });
+    }
+  }, [orderId]);
+
   // Render steps based on current step
   const renderStep = () => {
     switch(currentStep) {
@@ -197,7 +230,7 @@ const Checkout = () => {
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${errors.firstName ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                  className={`w-full px-4 py-2 border ${errors.firstName ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
                   placeholder="Enter your first name"
                 />
                 {errors.firstName && (
@@ -214,7 +247,7 @@ const Checkout = () => {
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${errors.lastName ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                  className={`w-full px-4 py-2 border ${errors.lastName ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
                   placeholder="Enter your last name"
                 />
                 {errors.lastName && (
@@ -233,7 +266,7 @@ const Checkout = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${errors.email ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                  className={`w-full px-4 py-2 border ${errors.email ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
                   placeholder="Enter your email"
                 />
                 {errors.email && (
@@ -250,7 +283,7 @@ const Checkout = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${errors.phone ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                  className={`w-full px-4 py-2 border ${errors.phone ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
                   placeholder="Enter your phone number"
                 />
                 {errors.phone && (
@@ -267,11 +300,62 @@ const Checkout = () => {
                   value={formData.address}
                   onChange={handleInputChange}
                   rows="3"
-                  className={`w-full px-4 py-2 border ${errors.address ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors`}
+                  className={`w-full px-4 py-2 border ${errors.address ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
                   placeholder="Enter your shipping address"
                 />
                 {errors.address && (
                   <p className="mt-1 text-sm text-error">{errors.address}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  City <span className="text-error">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${errors.city ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
+                  placeholder="Enter your city"
+                />
+                {errors.city && (
+                  <p className="mt-1 text-sm text-error">{errors.city}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Country <span className="text-error">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${errors.country ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
+                  placeholder="Enter your country"
+                />
+                {errors.country && (
+                  <p className="mt-1 text-sm text-error">{errors.country}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Zip/Postal Code <span className="text-error">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="zipCode"
+                  value={formData.zipCode}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${errors.zipCode ? 'border-error' : 'border-gray-300'} rounded-md focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-black`}
+                  placeholder="Enter your zip or postal code"
+                />
+                {errors.zipCode && (
+                  <p className="mt-1 text-sm text-error">{errors.zipCode}</p>
                 )}
               </div>
             </motion.div>
@@ -530,17 +614,50 @@ const Checkout = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={async () => {
-                      // Call backend to create PayPal order and redirect
+                      // Get token from userInfo in localStorage
+                      let token = null;
+                      const userInfo = localStorage.getItem('userInfo');
+                      if (userInfo) {
+                        try {
+                          token = JSON.parse(userInfo).token;
+                        } catch {}
+                      }
+                      if (!token) {
+                        alert('You must be logged in to continue with PayPal. Please sign in first.');
+                        return;
+                      }
+                      // Validate required shipping fields
+                      if (!formData.address || !formData.city || !formData.country || !formData.zipCode) {
+                        alert('Please fill in all required shipping address fields (Address, City, Country, Zip/Postal Code) before continuing with PayPal.');
+                        return;
+                      }
                       const response = await fetch("/api/paypal/create-order", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ amount: "49.99" }),
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                          amount: totalAmount,
+                          orderItems: cartItems.map(item => ({
+                            product: item.product,
+                            quantity: item.quantity,
+                            price: item.price,
+                          })),
+                          shippingAddress: {
+                            address: formData.address,
+                            city: formData.city,
+                            state: formData.state,
+                            postalCode: formData.zipCode,
+                            country: formData.country,
+                          },
+                        }),
                       });
                       const data = await response.json();
                       if (data && data.approvalUrl) {
                         window.location.href = data.approvalUrl;
                       } else {
-                        alert("Failed to initiate PayPal payment.");
+                        alert(data.error || "Failed to initiate PayPal payment.");
                       }
                     }}
                   >

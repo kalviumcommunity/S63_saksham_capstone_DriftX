@@ -6,6 +6,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
 import { startDailyStatsJob } from './cron/dailyStatsJob.js';
+import http from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 
 // Routes + DB
 import connectDB from './Database/db.js';
@@ -67,8 +69,32 @@ app.use((err, req, res, next) => {
 // Start daily stats cron job
 startDailyStatsJob();
 
+const server = http.createServer(app);
+
+// Socket.IO setup
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+io.on('connection', (socket) => {
+  // Join a room for a specific order
+  socket.on('joinOrderRoom', (orderId) => {
+    socket.join(`order_${orderId}`);
+  });
+
+  // Optional: handle disconnects, etc.
+  socket.on('disconnect', () => {});
+});
+
+// Export io for use in controllers
+export { io };
+
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`🌐 Server running at: http://localhost:${PORT}`)
-);
+server.listen(PORT, () => {
+  console.log(`\uD83C\uDF10 Server running at: http://localhost:${PORT}`);
+});
