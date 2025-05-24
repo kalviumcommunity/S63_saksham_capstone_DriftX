@@ -13,6 +13,8 @@ import Lottie from 'lottie-react';
 import successAnimation from '../assets/animations/success.json';
 import deliveryAnimation from '../assets/animations/delivery.json';
 import { io as socketIOClient } from 'socket.io-client';
+import { gql } from '@apollo/client';
+import { apolloClient } from '../apolloClient';
 
 // 3D Box Component
 const Box = () => {
@@ -34,6 +36,34 @@ const Box = () => {
 };
 
 const SOCKET_URL = 'http://localhost:5000';
+
+// GraphQL subscription for order status updates
+export const ORDER_STATUS_UPDATED = gql`
+  subscription OrderStatusUpdated($orderId: ID!) {
+    orderStatusUpdated(orderId: $orderId) {
+      id
+      status
+      updatedAt
+    }
+  }
+`;
+
+// Utility to subscribe to order status updates (for admin usage)
+export function subscribeToOrderStatus(orderId, onUpdate) {
+  return apolloClient.subscribe({
+    query: ORDER_STATUS_UPDATED,
+    variables: { orderId },
+  }).subscribe({
+    next({ data }) {
+      if (data && data.orderStatusUpdated) {
+        onUpdate(data.orderStatusUpdated);
+      }
+    },
+    error(err) {
+      console.error('GraphQL subscription error:', err);
+    },
+  });
+}
 
 const OrderConfirmation = () => {
   const { scrollYProgress } = useScroll();
