@@ -46,7 +46,7 @@
     "redux-thunk": "^2.4.2",
     "styled-components": "^6.1.17",
     "swiper": "^11.0.5",
-    "three": "^0.158.0"
+    "three": "^0.159.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-react-jsx": "^7.22.15",
@@ -65,7 +65,6 @@
   },
   "resolutions": {
     "@react-three/drei/@types/three": "0.158.0",
-    "three": "0.158.0",
     "@tensorflow/tfjs-core": "4.11.0",
     "@tensorflow/tfjs-backend-webgl": "4.11.0",
     "@tensorflow/tfjs-data": "4.11.0"
