@@ -5,7 +5,7 @@
   "main": "graphqlServer.js",
   "type": "module",
   "scripts": {
-    "start": "node graphqlServer.js",
+    "start": "node server.js",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "keywords": [],

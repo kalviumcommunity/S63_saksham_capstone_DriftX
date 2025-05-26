@@ -19,7 +19,6 @@ import {
 } from '../redux/slices/cartSlice';
 import { toast } from 'react-toastify';
 import AIRecommendations from '../components/AIRecommendations';
-import useResponsive from '../utils/useResponsive';
 import Confetti from 'react-confetti';
 import { useSpeechSynthesis } from 'react-speech-kit';
 
@@ -32,7 +31,6 @@ const Cart = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImage, setModalImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { isMobile, isTablet, isDesktop } = useResponsive();
   const [showMiniCart, setShowMiniCart] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -193,7 +191,7 @@ const Cart = () => {
         <FaRobot className="text-2xl" />
       </button>
       {/* Mini-cart drawer for mobile */}
-      {isMobile && showMiniCart && (
+      {showMiniCart && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex justify-end">
           <div className="w-80 bg-white h-full shadow-lg p-4 overflow-y-auto">
             <h2 className="text-lg font-bold mb-4">Mini Cart</h2>
@@ -203,7 +201,7 @@ const Cart = () => {
         </div>
       )}
       {/* Sticky checkout bar on mobile */}
-      {isMobile && displayItems.length > 0 && (
+      {displayItems.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full z-40 bg-primary text-white flex justify-between items-center px-4 py-3 shadow-lg">
           <span className="font-bold">Total: ${total.toFixed(2)}</span>
           <Link to="/checkout" className="bg-white text-primary font-bold px-4 py-2 rounded shadow">Checkout</Link>

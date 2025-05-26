@@ -6,8 +6,6 @@ import { FaLock, FaCreditCard, FaPaypal, FaApplePay, FaGooglePay, FaShippingFast
          FaBox, FaUser, FaMapMarkerAlt, FaPhone, FaEnvelope, FaInfoCircle, 
          FaRobot, FaArrowRight, FaArrowLeft, FaMoneyBillWave, FaMobileAlt, FaWallet } from 'react-icons/fa';
 import { FaCalendar } from 'react-icons/fa';
-import PaypalButton from "../components/PaypalButton";
-import PaypalRedirectButton from "../components/PaypalRedirectButton";
 
 const Checkout = () => {
   const navigate = useNavigate();

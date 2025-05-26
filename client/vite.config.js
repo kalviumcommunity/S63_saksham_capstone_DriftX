@@ -48,11 +48,12 @@ export default defineConfig({
       }
     },
     rollupOptions: {
+      external: ['react-spring', 'react-toastify', 'socket.io-client', '@apollo/client', 'react-confetti', 'react-speech-kit', 'react-hot-toast', 'react-easy-crop', '@apollo/client/utilities', '@apollo/client/link/ws'],
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          'ui-vendor': ['framer-motion', 'react-spring', 'styled-components']
+          'ui-vendor': ['framer-motion', 'styled-components']
         }
       }
     },

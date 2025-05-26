@@ -35,7 +35,6 @@ import BlogRoutes from './routes/BlogRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
-import OTPLogin from './components/OTPLogin';
 import { useSpring, animated } from 'react-spring';
 
 const ScrollToTop = () => {
@@ -195,11 +194,6 @@ const AppContent = () => {
           <Route path="/add-product" element={
             <PageTransition>
               <AddProduct />
-            </PageTransition>
-          } />
-          <Route path="/otp-login" element={
-            <PageTransition>
-              <OTPLogin />
             </PageTransition>
           } />
         </Routes>
