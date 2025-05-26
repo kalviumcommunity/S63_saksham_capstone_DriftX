@@ -35,28 +35,16 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.mp4'],
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
-    exclude: ['@tensorflow/tfjs']
+    include: ['react', 'react-dom', 'react-router-dom']
   },
   build: {
-    sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    },
+    sourcemap: true,
     rollupOptions: {
-      external: ['react-spring', 'react-toastify', 'socket.io-client', '@apollo/client', 'react-confetti', 'react-speech-kit', 'react-hot-toast', 'react-easy-crop', '@apollo/client/utilities', '@apollo/client/link/ws'],
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
-          'ui-vendor': ['framer-motion', 'styled-components']
         }
       }
-    },
-    chunkSizeWarningLimit: 1000
+    }
   }
 });

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUserOrders, getOrderDetails, updateOrderStatus } from '../controllers/orderController.js';
+import Order from '../models/OrderSchema.js';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
 import User from '../models/UserSchema.js';
@@ -40,13 +40,6 @@ const dummyOrders = [
     totalAmount: 199.98
   }
 ];
-
-// Protected routes
-router.get('/my-orders', protect, getUserOrders);
-router.get('/:orderId', protect, getOrderDetails);
-
-// Admin routes
-router.put('/:orderId/status', protect, isAdmin, updateOrderStatus);
 
 // ✅ GET all orders
 router.get('/', async (req, res) => {

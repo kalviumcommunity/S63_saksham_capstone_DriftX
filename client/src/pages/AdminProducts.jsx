@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllProducts, deleteProduct } from '../services/api';
-import { subscribeToOrderStatus } from './OrderConfirmation';
 
 // Sample dummy products data
 const dummyProducts = [
@@ -79,46 +78,6 @@ const dummyProducts = [
   }
 ];
 
-// Define orderIds for demonstration (replace with real order IDs from your backend in production)
-const orderIds = dummyProducts.map(product => product._id);
-
-const AdminOrderStatusTable = ({ orderIds }) => {
-  const [orderStatuses, setOrderStatuses] = useState({});
-
-  useEffect(() => {
-    const subs = orderIds.map(orderId =>
-      subscribeToOrderStatus(orderId, (update) => {
-        setOrderStatuses(prev => ({ ...prev, [orderId]: update }));
-      })
-    );
-    return () => subs.forEach(sub => sub.unsubscribe());
-  }, [orderIds]);
-
-  return (
-    <div className="bg-white rounded-lg shadow p-6 mb-8">
-      <h2 className="text-2xl font-bold mb-4">Real-Time Order Status</h2>
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Order ID</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Last Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orderIds.map(orderId => (
-            <tr key={orderId}>
-              <td className="border px-4 py-2">{orderId}</td>
-              <td className="border px-4 py-2">{orderStatuses[orderId]?.status || 'Loading...'}</td>
-              <td className="border px-4 py-2">{orderStatuses[orderId]?.updatedAt ? new Date(orderStatuses[orderId].updatedAt).toLocaleString() : '-'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
-
 const AdminProducts = () => {
   const [products, setProducts] = useState(dummyProducts); // Initialize with dummy products
   const [loading, setLoading] = useState(false);
@@ -182,7 +141,6 @@ const AdminProducts = () => {
           ))}
         </div>
       )}
-      <AdminOrderStatusTable orderIds={orderIds} />
     </div>
   );
 };

@@ -254,7 +254,7 @@ const Home = () => {
 
   return (
     <motion.div 
-      className="w-screen min-h-screen bg-white"
+      className="w-full min-h-full"
       style={{ opacity, scale }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -335,7 +335,7 @@ const Home = () => {
               </video>
               <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60" />
             </div>
-            <div className="relative z-10 container px-0">
+            <div className="relative z-10 container mx-auto px-4">
               <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-12">
                 AI-Powered Search
               </h2>
@@ -344,17 +344,20 @@ const Home = () => {
           </section>
 
           {/* AI Recommendations Section */}
+          <div className="mb-24" />
           <AIRecommendations />
 
           {/* Virtual Try-On Section */}
+          <div className="mb-24" />
           <VirtualTryOn />
 
           {/* Live Style Assistant Section */}
+          <div className="mb-24" />
           <LiveStyleAssistant />
 
           {/* 3D Mall Section */}
           <section className="relative min-h-screen w-full bg-gradient-to-b from-gray-900 to-black py-20">
-            <div className="container px-0">
+            <div className="container mx-auto px-4">
               <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-12">
                 Explore Our 3D Mall
               </h2>
@@ -480,7 +483,7 @@ const Home = () => {
           </motion.section>
 
           {/* Blog Articles Section */}
-          <section className="w-full py-24 px-0 sm:px-8 bg-[#1E1E1E]">
+          <section className="w-full py-24 px-4 sm:px-8 bg-[#1E1E1E]">
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Article 1 */}
@@ -626,7 +629,7 @@ const Home = () => {
 
           {/* Product Showcase Carousel */}
           <section className="w-full py-16 bg-white overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-0">
+            <div className="max-w-[1400px] mx-auto px-4">
               <div className="relative">
                 <div className="flex items-center justify-center">
                   <div className="relative flex items-center gap-0">

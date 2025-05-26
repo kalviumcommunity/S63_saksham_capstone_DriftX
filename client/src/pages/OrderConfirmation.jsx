@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useInView, useMotionTemplate } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaCheckCircle, FaBox, FaTruck, FaMapMarkerAlt, FaCreditCard, 
@@ -12,9 +12,6 @@ import * as THREE from 'three';
 import Lottie from 'lottie-react';
 import successAnimation from '../assets/animations/success.json';
 import deliveryAnimation from '../assets/animations/delivery.json';
-import { io as socketIOClient } from 'socket.io-client';
-import { gql } from '@apollo/client';
-import { apolloClient } from '../apolloClient';
 
 // 3D Box Component
 const Box = () => {
@@ -34,36 +31,6 @@ const Box = () => {
     </mesh>
   );
 };
-
-const SOCKET_URL = 'http://localhost:5000';
-
-// GraphQL subscription for order status updates
-export const ORDER_STATUS_UPDATED = gql`
-  subscription OrderStatusUpdated($orderId: ID!) {
-    orderStatusUpdated(orderId: $orderId) {
-      id
-      status
-      updatedAt
-    }
-  }
-`;
-
-// Utility to subscribe to order status updates (for admin usage)
-export function subscribeToOrderStatus(orderId, onUpdate) {
-  return apolloClient.subscribe({
-    query: ORDER_STATUS_UPDATED,
-    variables: { orderId },
-  }).subscribe({
-    next({ data }) {
-      if (data && data.orderStatusUpdated) {
-        onUpdate(data.orderStatusUpdated);
-      }
-    },
-    error(err) {
-      console.error('GraphQL subscription error:', err);
-    },
-  });
-}
 
 const OrderConfirmation = () => {
   const { scrollYProgress } = useScroll();
@@ -87,10 +54,6 @@ const OrderConfirmation = () => {
     config: { duration: 5000 },
     loop: true
   });
-
-  // Add state for order status
-  const [orderStatus, setOrderStatus] = useState('Processing');
-  const orderId = '123456'; // TODO: Replace with dynamic orderId from props, params, or context
 
   useEffect(() => {
     // Enhanced confetti animation
@@ -124,26 +87,6 @@ const OrderConfirmation = () => {
       requestAnimationFrame(frame);
     }());
   }, []);
-
-  useEffect(() => {
-    // Connect to Socket.IO server
-    const socket = socketIOClient(SOCKET_URL, {
-      transports: ['websocket'],
-      withCredentials: true,
-    });
-    // Join the order room
-    socket.emit('joinOrderRoom', orderId);
-    // Listen for order status updates
-    socket.on('orderStatusUpdate', (data) => {
-      if (data.orderId === orderId && data.status) {
-        setOrderStatus(data.status);
-      }
-    });
-    // Cleanup on unmount
-    return () => {
-      socket.disconnect();
-    };
-  }, [orderId]);
 
   // Scroll to top with smooth animation
   const scrollToTop = () => {
