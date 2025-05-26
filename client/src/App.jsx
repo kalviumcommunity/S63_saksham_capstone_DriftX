@@ -35,6 +35,8 @@ import BlogRoutes from './routes/BlogRoutes';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
+import OTPLogin from './components/OTPLogin';
+import { useSpring, animated } from 'react-spring';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -51,18 +53,14 @@ const ScrollToTop = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-[#0f172a]">
       <ScrollToTop />
       <Navbar />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={
-            <PageTransition>
-              <Home />
-            </PageTransition>
-          } />
+          <Route path="/" element={<Home />} />
           <Route path="/office-dress" element={
             <PageTransition>
               <OfficeDress />
@@ -197,6 +195,11 @@ const AppContent = () => {
           <Route path="/add-product" element={
             <PageTransition>
               <AddProduct />
+            </PageTransition>
+          } />
+          <Route path="/otp-login" element={
+            <PageTransition>
+              <OTPLogin />
             </PageTransition>
           } />
         </Routes>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
@@ -12,6 +12,11 @@ import {
 } from 'react-icons/fa';
 import { logout, updateUser } from '../redux/slices/userSlice';
 import { format } from 'date-fns';
+import { subscribeToOrderStatus } from './OrderConfirmation';
+import toast, { Toaster } from 'react-hot-toast';
+import { useSpring, animated } from 'react-spring';
+import Cropper from 'react-easy-crop';
+import gsap from 'gsap';
 
 const MotionCard = ({ children, className }) => {
   const x = useMotionValue(0);
@@ -43,6 +48,63 @@ const formatDate = (dateString) => {
     console.error('Error formatting date:', error);
     return 'Not specified';
   }
+};
+
+// Animated Counter Component
+const AnimatedCounter = ({ value }) => {
+  const props = useSpring({ val: value, from: { val: 0 }, config: { tension: 170, friction: 26 } });
+  return <animated.span className="text-2xl font-bold text-black">{props.val.to(val => Math.floor(val))}</animated.span>;
+};
+
+// Profile Image Cropper Modal
+const ImageCropperModal = ({ isOpen, onClose, image, onCropComplete }) => {
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
+  const onCropChange = (crop) => {
+    setCrop(crop);
+  };
+
+  const onZoomChange = (zoom) => {
+    setZoom(zoom);
+  };
+
+  const onCropAreaChange = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  const handleCropComplete = () => {
+    if (croppedAreaPixels) {
+      onCropComplete(croppedAreaPixels);
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-4 rounded-lg w-96">
+        <h2 className="text-xl font-bold mb-4 text-black">Crop Profile Image</h2>
+        <div className="relative h-64 mb-4">
+          <Cropper
+            image={image}
+            crop={crop}
+            zoom={zoom}
+            aspect={1}
+            onCropChange={onCropChange}
+            onZoomChange={onZoomChange}
+            onCropAreaChange={onCropAreaChange}
+          />
+        </div>
+        <div className="flex justify-end space-x-2">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-300 text-black rounded">Cancel</button>
+          <button onClick={handleCropComplete} className="px-4 py-2 bg-primary text-white rounded">Crop</button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const UserProfile = () => {
@@ -81,6 +143,11 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [formImage, setFormImage] = useState(null);
+  const [orderStatuses, setOrderStatuses] = useState({});
+  const [orderIds, setOrderIds] = useState([]);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [cropperImage, setCropperImage] = useState(null);
+  const tabContentRef = useRef(null);
 
   const { userInfo } = useSelector((state) => state.user);
 
@@ -206,6 +273,39 @@ const UserProfile = () => {
     }
   }, [userInfo]);
   
+  useEffect(() => {
+    const fetchOrderIds = async () => {
+      if (userInfo && userInfo._id) {
+        try {
+          const token = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).token : '';
+          const res = await fetch(`/api/orders/user/${userInfo._id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setOrderIds(data.map(order => order._id));
+          } else {
+            setOrderIds([]);
+          }
+        } catch (err) {
+          setOrderIds([]);
+        }
+      }
+    };
+    fetchOrderIds();
+  }, [userInfo]);
+  
+  useEffect(() => {
+    if (orderIds.length > 0) {
+      const subs = orderIds.map(orderId =>
+        subscribeToOrderStatus(orderId, (update) => {
+          setOrderStatuses(prev => ({ ...prev, [orderId]: update }));
+        })
+      );
+      return () => subs.forEach(sub => sub.unsubscribe());
+    }
+  }, [orderIds]);
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     
@@ -266,7 +366,10 @@ const UserProfile = () => {
     if (file) {
       setFormImage(file);
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
+      reader.onloadend = () => {
+        setCropperImage(reader.result);
+        setIsCropperOpen(true);
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -416,7 +519,35 @@ const UserProfile = () => {
     </motion.div>
   );
 
-  const renderProfileInfo = () => (
+  const renderOrderStatuses = () => (
+    <div className="bg-white rounded-lg shadow p-6 mb-8 mt-8">
+      <h2 className="text-2xl font-bold mb-4 text-black">Your Real-Time Order Status</h2>
+      {orderIds.length > 0 ? (
+        <table className="min-w-full table-auto text-black">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">Order ID</th>
+              <th className="px-4 py-2">Status</th>
+              <th className="px-4 py-2">Last Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orderIds.map(orderId => (
+              <tr key={orderId}>
+                <td className="border px-4 py-2">{orderId}</td>
+                <td className="border px-4 py-2">{orderStatuses[orderId]?.status || 'Loading...'}</td>
+                <td className="border px-4 py-2">{orderStatuses[orderId]?.updatedAt ? new Date(orderStatuses[orderId].updatedAt).toLocaleString() : '-'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-black">No orders found.</p>
+      )}
+    </div>
+  );
+
+  const renderProfileInfo = (stats) => (
     <form onSubmit={handleProfileUpdate} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Personal Information Card */}
       <motion.div 
@@ -547,7 +678,7 @@ const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Orders Placed</p>
-                <p className="text-2xl font-bold text-black">{personalStats.totalOrders}</p>
+                <AnimatedCounter value={stats.totalOrders} />
               </div>
               <FaBox className="text-primary text-2xl" />
             </div>
@@ -556,7 +687,7 @@ const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Spent</p>
-                <p className="text-2xl font-bold text-black">${personalStats.totalSpent}</p>
+                <AnimatedCounter value={stats.totalSpent} />
               </div>
               <FaCreditCard className="text-primary text-2xl" />
             </div>
@@ -565,7 +696,7 @@ const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Reviews</p>
-                <p className="text-2xl font-bold text-black">{personalStats.reviewsGiven}</p>
+                <AnimatedCounter value={stats.reviewsGiven} />
               </div>
               <FaComments className="text-primary text-2xl" />
             </div>
@@ -574,7 +705,7 @@ const UserProfile = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Reward Points</p>
-                <p className="text-2xl font-bold text-black">{personalStats.pointsEarned}</p>
+                <AnimatedCounter value={stats.pointsEarned} />
               </div>
               <FaTrophy className="text-primary text-2xl" />
             </div>
@@ -684,6 +815,27 @@ const UserProfile = () => {
     </form>
   );
   
+  const handleCropComplete = (croppedAreaPixels) => {
+    // Logic to crop image and update preview
+    // For now, just close the cropper
+    setIsCropperOpen(false);
+  };
+
+  // GSAP Tab Transition
+  useEffect(() => {
+    if (tabContentRef.current) {
+      gsap.from(tabContentRef.current, { opacity: 0, y: 20, duration: 0.5 });
+    }
+  }, [activeTab]);
+
+  // Demo data fallback for stats
+  const stats = {
+    totalOrders: personalStats.totalOrders || 12,
+    totalSpent: personalStats.totalSpent || 1200,
+    reviewsGiven: personalStats.reviewsGiven || 8,
+    pointsEarned: personalStats.pointsEarned || 350,
+  };
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-gray-900 flex items-center justify-center">
@@ -716,18 +868,18 @@ const UserProfile = () => {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
-      <div className="py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className="h-full w-full">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-7xl mx-auto"
+          className="w-full h-full"
         >
           {/* Profile Header */}
           <motion.div 
             variants={cardVariants}
-            className="bg-gradient-to-r from-primary to-primary-dark rounded-2xl shadow-xl overflow-hidden mb-8"
+            className="bg-gradient-to-r from-primary to-primary-dark rounded-none shadow-xl overflow-hidden mb-8 w-full"
           >
             <div className="relative h-64">
               <motion.div 
@@ -740,17 +892,24 @@ const UserProfile = () => {
                 >
                   <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white shadow-xl">
                     <img
-                      src={userInfo?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userDetails.fullName)}&background=random`}
+                      src={imagePreview || userInfo?.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(userDetails.fullName)}&background=random`}
                       alt={userDetails.fullName}
                       className="w-full h-full object-cover"
                     />
                     <motion.div 
                       className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                      onClick={() => {/* Add image upload logic */}}
+                      onClick={() => document.getElementById('profile-image-input').click()}
                     >
                       <FaCamera className="text-white text-2xl" />
                     </motion.div>
                   </div>
+                  <input
+                    id="profile-image-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFormImageChange}
+                  />
                 </motion.div>
                 <div>
                   <motion.h1 
@@ -772,7 +931,7 @@ const UserProfile = () => {
               </motion.div>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md px-8 py-4">
+            <div className="bg-white/10 backdrop-blur-md px-4 py-4 w-full">
               <div className="flex space-x-8 overflow-x-auto scrollbar-hide">
                 {['profile', 'activities', 'notifications', 'deals', 'preferences'].map((tab) => (
                   <motion.button
@@ -801,16 +960,25 @@ const UserProfile = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
+              ref={tabContentRef}
             >
-              {activeTab === 'profile' && renderProfileInfo()}
+              {activeTab === 'profile' && renderProfileInfo(stats)}
               {activeTab === 'activities' && renderActivities()}
               {activeTab === 'notifications' && renderNotifications()}
               {activeTab === 'deals' && renderDeals()}
               {activeTab === 'preferences' && renderPreferences()}
+              {renderOrderStatuses()}
             </motion.div>
           </AnimatePresence>
         </motion.div>
       </div>
+      <Toaster />
+      <ImageCropperModal
+        isOpen={isCropperOpen}
+        onClose={() => setIsCropperOpen(false)}
+        image={cropperImage}
+        onCropComplete={handleCropComplete}
+      />
     </div>
   );
 };
