@@ -35,16 +35,27 @@ export default defineConfig({
   },
   assetsInclude: ['**/*.mp4'],
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom']
+    include: ['react', 'react-dom', 'react-router-dom'],
+    exclude: ['@tensorflow/tfjs']
   },
   build: {
-    sourcemap: true,
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei'],
+          'ui-vendor': ['framer-motion', 'react-spring', 'styled-components']
         }
       }
-    }
+    },
+    chunkSizeWarningLimit: 1000
   }
 });
